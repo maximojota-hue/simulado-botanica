@@ -1,0 +1,3049 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulado — Botânica (Biologia, 2º ano)</title>
+<style>
+  :root{
+    --bg:#f5f6fa;
+    --card:#ffffff;
+    --ink:#1a1c23;
+    --muted:#6b7280;
+    --line:#e3e6ee;
+    --accent:#4f46e5;
+    --accent-soft:#eef0ff;
+    --ok:#15803d;
+    --ok-soft:#e9f8ef;
+    --ok-line:#b7e4c7;
+    --no:#b91c1c;
+    --no-soft:#fdecec;
+    --no-line:#f3bcbc;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:840px;margin:0 auto;padding:28px 18px 80px}
+
+  header.top{margin-bottom:22px}
+  .kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+  h1{font-size:clamp(22px,3.4vw,30px);line-height:1.2;margin:6px 0 6px;letter-spacing:-.02em}
+  .sub{color:var(--muted);font-size:14px;margin:0}
+
+  .bar{
+    position:sticky;top:0;z-index:5;
+    background:rgba(245,246,250,.92);
+    backdrop-filter:blur(8px);
+    padding:12px 0 10px;margin:-4px 0 18px;
+    border-bottom:1px solid var(--line);
+  }
+  .bar-inner{max-width:840px;margin:0 auto;padding:0 18px;display:flex;align-items:center;gap:14px}
+  .track{flex:1;height:7px;border-radius:99px;background:#e4e7f0;overflow:hidden}
+  .fill{height:100%;width:0%;background:linear-gradient(90deg,#6366f1,#8b5cf6);transition:width .35s ease}
+  .count{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .count b{color:var(--ink)}
+
+  .timer{
+    font-family:ui-monospace,SFMono-Regular,Consolas,monospace;
+    font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;
+    padding:4px 10px;border-radius:9px;white-space:nowrap;
+    background:#fff;border:1.5px solid var(--line);color:var(--ink);
+  }
+  .timer::before{content:"⏱ ";font-size:12.5px;opacity:.5;font-weight:400}
+  .timer.warn{border-color:#efd08f;background:#fffaf0;color:#a16207}
+  .timer.danger{border-color:#f3bcbc;background:var(--no-soft);color:var(--no);animation:pulse 1.5s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+  .timer.hidden{display:none}
+
+  .start-rules{list-style:none;padding:0;margin:20px 0 0;display:flex;flex-direction:column;gap:10px}
+  .start-rules li{font-size:14.5px;line-height:1.5;color:#3b4051;padding-left:22px;position:relative}
+  .start-rules li::before{content:"›";position:absolute;left:5px;top:-1px;color:var(--accent);font-weight:800;font-size:17px}
+  .big{font-size:16px;padding:15px 28px;width:100%}
+  .banner{
+    margin:0 0 16px;padding:11px 14px;border-radius:10px;
+    background:var(--no-soft);border:1px solid var(--no-line);color:var(--no);
+    font-size:14px;font-weight:600;
+  }
+  .meta-row{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0 0;font-size:13.5px;color:var(--muted)}
+  .meta-row b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+
+  /* ---------- botao para o simulado de prova ---------- */
+  .prova-cta{
+    display:flex;align-items:center;gap:12px;width:100%;
+    margin:0 0 16px;padding:14px 16px;
+    background:linear-gradient(135deg,#0f766e,#0d9488);
+    color:#fff;border:0;border-radius:13px;cursor:pointer;
+    font-family:inherit;text-align:left;
+    box-shadow:0 3px 14px -4px rgba(13,148,136,.55);
+    transition:transform .08s,box-shadow .16s;
+  }
+  .prova-cta:hover{box-shadow:0 5px 20px -4px rgba(13,148,136,.65)}
+  .prova-cta:active{transform:scale(.995)}
+  .prova-cta .ico{
+    flex:0 0 34px;height:34px;border-radius:10px;
+    background:rgba(255,255,255,.22);display:grid;place-items:center;font-size:18px;
+  }
+  .prova-cta .txt{flex:1;min-width:0}
+  .prova-cta .txt b{display:block;font-size:14.5px;font-weight:800;margin-bottom:2px}
+  .prova-cta .txt small{display:block;font-size:12px;opacity:.9;line-height:1.35}
+  .prova-cta .seta{flex:0 0 auto;font-size:17px;opacity:.8}
+
+  /* ---------- painel de registro de tentativas ---------- */
+  .log{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:12px 14px;margin:0 0 16px;box-shadow:0 1px 2px rgba(16,24,40,.04);
+  }
+  .log-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .log-title{font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  .log-badges{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:0}
+  .badge{
+    font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:99px;
+    background:#f0f2f8;color:#4b5060;white-space:nowrap;font-variant-numeric:tabular-nums;
+  }
+  .badge.zero{opacity:.45}
+  .badge.warn{background:#fff6e5;color:#a16207}
+  .badge.bad{background:var(--no-soft);color:var(--no)}
+  .badge.good{background:var(--ok-soft);color:var(--ok)}
+  .log-toggle{
+    font-size:12px;font-weight:600;padding:5px 11px;border-radius:8px;cursor:pointer;
+    background:#fff;border:1px solid var(--line);color:#4b5060;font-family:inherit;
+  }
+  .log-toggle:hover{border-color:#c3c8f5;color:var(--accent)}
+  .log-note{
+    margin:10px 0 0;font-size:13px;line-height:1.45;color:var(--no);
+    background:var(--no-soft);border:1px solid var(--no-line);border-radius:9px;padding:8px 11px;
+  }
+  .log-note b{font-variant-numeric:tabular-nums}
+  .log-list{
+    list-style:none;margin:11px 0 0;padding:0;display:flex;flex-direction:column;
+    gap:0;max-height:190px;overflow-y:auto;
+  }
+  .log-list[hidden]{display:none}
+  .log-list li{
+    display:flex;gap:9px;align-items:baseline;font-size:13px;line-height:1.4;
+    padding:7px 0;border-bottom:1px dashed #edf0f7;color:#3b4051;
+  }
+  .log-list li:last-child{border-bottom:0}
+  .log-time{font-family:ui-monospace,monospace;font-size:11.5px;color:var(--muted);flex:0 0 auto}
+  .log-tipo{font-weight:700;flex:0 0 auto}
+  .log-tipo.iniciou{color:var(--accent)}
+  .log-tipo.reiniciou{color:#a16207}
+  .log-tipo.interrompeu{color:var(--no)}
+  .log-tipo.concluiu{color:var(--ok)}
+  .log-tipo.tempo{color:var(--no)}
+  .log-nota{color:var(--muted);font-size:12.5px}
+  .log-foot{display:flex;justify-content:flex-end;margin-top:11px}
+  .log-foot[hidden]{display:none}
+  .log-clear{
+    font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:7px;cursor:pointer;
+    background:none;border:1px solid var(--line);color:var(--muted);font-family:inherit;
+  }
+  .log-clear:hover{border-color:var(--no-line);color:var(--no)}
+
+  /* ---------- confirmacao antes de revelar ---------- */
+  .opt.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:0 0 0 3px rgba(79,70,229,.12)}
+  .opt.sel .key{background:var(--accent);color:#fff}
+  .confirm{
+    margin-top:16px;padding:14px 16px;border-radius:12px;
+    border:1.5px dashed var(--accent);background:#f8f9ff;animation:in .18s ease;
+  }
+  .confirm-q{font-size:14.5px;line-height:1.5;color:#33384a;margin:0 0 12px}
+  .confirm-q b{color:var(--ink)}
+  .confirm-q .pick{
+    display:block;margin-top:6px;font-weight:600;color:var(--ink);
+    background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;
+  }
+  .confirm-btns{display:flex;gap:9px;justify-content:flex-end;flex-wrap:wrap}
+  .confirm-btns .btn{padding:9px 18px;font-size:14.5px}
+  .danger-btn{background:var(--no);border-color:var(--no)}
+  .danger-btn:hover{background:#991b1b}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:24px 24px 20px;
+    box-shadow:0 1px 2px rgba(16,24,40,.04),0 8px 24px -18px rgba(16,24,40,.18);
+  }
+  .chip{
+    display:inline-block;font-size:11.5px;font-weight:700;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--accent);background:var(--accent-soft);
+    padding:4px 10px;border-radius:99px;margin-bottom:14px;
+  }
+  .q{font-size:17.5px;line-height:1.6;margin:0 0 6px;font-weight:500}
+  .q strong{font-weight:700}
+
+  .formula{
+    font-family:"Cascadia Mono",Consolas,"SF Mono",Menlo,monospace;
+    font-size:15px;line-height:1.45;
+    background:#f8f9fc;border:1px dashed #d6dae7;border-radius:10px;
+    padding:14px 16px;margin:14px 0 4px;
+    white-space:pre;overflow-x:auto;color:#242736;
+  }
+  .formula .lbl{display:block;font-family:inherit;font-size:11.5px;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+
+  /* ---------- figura (diagrama SVG da questao/aula) ---------- */
+  .figura{
+    margin:16px 0 4px;padding:14px 12px 10px;
+    background:#fbfcff;border:1px solid var(--line);border-radius:12px;
+    text-align:center;
+  }
+  .figura svg{max-width:100%;height:auto;display:block;margin:0 auto}
+  .figura .cap{
+    display:block;margin-top:9px;font-size:12.5px;line-height:1.5;
+    color:var(--muted);text-align:center;
+  }
+  .lesson-body .figura{margin:0 0 16px}
+
+  /* ---------- botao "aprender o assunto" ---------- */
+  .lesson-btn{
+    display:flex;align-items:center;gap:9px;width:100%;
+    margin-top:14px;padding:12px 15px;
+    background:linear-gradient(135deg,#4f46e5,#7c3aed);
+    color:#fff;border:0;border-radius:11px;cursor:pointer;
+    font-family:inherit;font-size:14.5px;font-weight:700;text-align:left;
+    box-shadow:0 2px 10px -3px rgba(79,70,229,.5);
+    transition:transform .08s,box-shadow .15s;
+  }
+  .lesson-btn:hover{box-shadow:0 4px 16px -3px rgba(79,70,229,.6)}
+  .lesson-btn:active{transform:scale(.994)}
+  .lesson-btn .ico{
+    flex:0 0 26px;height:26px;border-radius:8px;
+    background:rgba(255,255,255,.2);display:grid;place-items:center;font-size:14px;
+  }
+  .lesson-btn .lbl{flex:1;min-width:0}
+  .lesson-btn .lbl small{display:block;font-weight:500;opacity:.85;font-size:12px;margin-top:1px}
+  .lesson-btn .arrow{opacity:.7;font-size:16px;flex:0 0 auto}
+
+  /* ---------- modal da aula ---------- */
+  .modal{
+    position:fixed;inset:0;z-index:60;display:none;
+    background:rgba(16,18,28,.55);backdrop-filter:blur(3px);
+    padding:24px 16px;overflow-y:auto;
+  }
+  .modal.open{display:block;animation:fadeIn .16s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .lesson{
+    max-width:720px;margin:0 auto;background:#fff;border-radius:16px;
+    box-shadow:0 24px 60px -20px rgba(0,0,0,.45);overflow:hidden;
+    animation:up .22s cubic-bezier(.2,.8,.3,1);
+  }
+  @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .lesson-head{
+    padding:20px 22px 16px;border-bottom:1px solid var(--line);
+    background:linear-gradient(135deg,#f5f4ff,#faf9ff);
+    display:flex;align-items:flex-start;gap:12px;
+  }
+  .lesson-head .eyebrow{
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--accent);font-weight:800;margin:0 0 5px;
+  }
+  .lesson-head h2{
+    margin:0;font-size:19px;line-height:1.25;letter-spacing:-.01em;flex:1;
+  }
+  .lesson-close{
+    flex:0 0 32px;height:32px;border-radius:9px;border:1px solid #ddd9f5;
+    background:#fff;color:#5b5871;font-size:17px;cursor:pointer;line-height:1;
+    display:grid;place-items:center;font-family:inherit;
+  }
+  .lesson-close:hover{border-color:var(--accent);color:var(--accent)}
+  .lesson-body{padding:20px 22px 24px}
+  .lesson-resumo{
+    font-size:15px;line-height:1.6;color:#33384a;
+    background:#f7f8fc;border-left:3px solid var(--accent);
+    padding:12px 15px;border-radius:0 9px 9px 0;margin:0 0 20px;
+  }
+  .lesson-body h3{
+    font-size:14px;letter-spacing:.02em;text-transform:uppercase;
+    color:var(--accent);margin:24px 0 8px;font-weight:800;
+  }
+  .lesson-body h3:first-of-type{margin-top:0}
+  .lesson-body p{font-size:15px;line-height:1.65;color:#2f3444;margin:0 0 12px}
+  .lesson-body ul{margin:0 0 14px;padding-left:20px}
+  .lesson-body li{font-size:15px;line-height:1.6;color:#2f3444;margin-bottom:7px}
+  .lesson-form{
+    font-family:"Cascadia Mono",Consolas,monospace;font-size:16px;font-weight:600;
+    background:#111827;color:#e5e7eb;border-radius:10px;
+    padding:14px 16px;margin:0 0 14px;text-align:center;overflow-x:auto;
+  }
+  .lesson-form .leg{
+    display:block;font-family:inherit;font-size:11.5px;font-weight:400;
+    color:#9ca3af;margin-top:7px;letter-spacing:.02em;
+  }
+  .lesson-hi{
+    background:#eef0ff;border:1px solid #d7d9f7;border-radius:10px;
+    padding:12px 14px;margin:0 0 14px;font-size:14.5px;line-height:1.55;
+    color:#3b3f57;font-weight:500;
+  }
+  .lesson-hi::before{content:"💡 ";font-weight:400}
+  .lesson-erros{
+    margin:6px 0 0;padding:14px 16px;background:var(--no-soft);
+    border:1px solid var(--no-line);border-radius:10px;
+  }
+  .lesson-erros .tit{
+    font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--no);font-weight:800;margin:0 0 8px;
+  }
+  .lesson-erros ul{margin:0;padding-left:18px}
+  .lesson-erros li{font-size:14px;color:#7f1d1d;margin-bottom:5px;line-height:1.5}
+  .lesson-foot{
+    display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;
+    padding:16px 22px;border-top:1px solid var(--line);background:#fbfbfe;
+  }
+
+  .opts{list-style:none;padding:0;margin:18px 0 0;display:flex;flex-direction:column;gap:10px}
+  .opt{
+    display:flex;gap:12px;align-items:flex-start;
+    border:1.5px solid var(--line);border-radius:12px;
+    padding:13px 15px;cursor:pointer;background:#fff;
+    transition:border-color .15s,background .15s,transform .06s;
+    font-size:15.5px;line-height:1.5;text-align:left;
+  }
+  .opt:hover:not(.locked){border-color:#c3c8f5;background:#fbfbff}
+  .opt:active:not(.locked){transform:scale(.997)}
+  .opt .key{
+    flex:0 0 26px;height:26px;border-radius:8px;background:#f0f2f8;color:#4b5060;
+    display:flex;align-items:center;justify-content:center;
+    font-size:12.5px;font-weight:700;font-family:ui-monospace,monospace;
+  }
+  .opt .txt{flex:1}
+  .opt.locked{cursor:default}
+  .opt.correct{border-color:var(--ok-line);background:var(--ok-soft)}
+  .opt.correct .key{background:#cdeedd;color:var(--ok)}
+  .opt.wrong{border-color:var(--no-line);background:var(--no-soft)}
+  .opt.wrong .key{background:#f8cfcf;color:var(--no)}
+  .opt.dim{opacity:.62}
+  .mark{font-weight:800;margin-left:auto;flex:0 0 auto;font-size:15px}
+  .opt.correct .mark{color:var(--ok)}
+  .opt.wrong .mark{color:var(--no)}
+
+  .fb{
+    margin-top:20px;border-top:1px solid var(--line);padding-top:18px;
+    animation:in .22s ease;
+  }
+  @keyframes in{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .verdict{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px;margin-bottom:10px}
+  .verdict.ok{color:var(--ok)}
+  .verdict.no{color:var(--no)}
+  .concept{font-size:14.5px;color:#33384a;background:#f8f9fc;border-left:3px solid var(--accent);
+    border-radius:0 8px 8px 0;padding:10px 14px;margin:0 0 14px}
+  .why{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:9px}
+  .why li{font-size:14.5px;line-height:1.55;padding-left:26px;position:relative;color:#3b4051}
+  .why li::before{position:absolute;left:0;top:0;font-weight:800}
+  .why li.good::before{content:"✓";color:var(--ok)}
+  .why li.bad::before{content:"✕";color:var(--no)}
+  .why li b.lbl{display:inline-block;font-family:ui-monospace,monospace;font-size:12.5px;
+    background:#eef0f6;color:#40465a;border-radius:5px;padding:0 5px;margin-right:5px}
+  .why li.picked{background:#fff;border:1px solid var(--line);border-radius:9px;padding:8px 10px 8px 30px;color:var(--ink)}
+  .why li.picked::before{left:10px;top:8px}
+
+  .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+  button{font-family:inherit;font-size:15px;font-weight:600;border-radius:11px;cursor:pointer;transition:.15s}
+  .btn{background:var(--accent);color:#fff;border:1px solid var(--accent);padding:11px 22px}
+  .btn:hover{background:#4338ca}
+  .btn:disabled{background:#c9ccd8;border-color:#c9ccd8;cursor:not-allowed}
+  .btn.ghost{background:#fff;color:#3b4051;border:1.5px solid var(--line)}
+  .btn.ghost:hover{border-color:#c3c8f5;color:var(--accent)}
+  .hint{font-size:12.5px;color:var(--muted);margin-right:auto;align-self:center}
+
+  /* resultado */
+  .score{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin:6px 0 4px}
+  .ring{
+    --p:0;
+    width:104px;height:104px;border-radius:50%;flex:0 0 auto;
+    background:conic-gradient(var(--accent) calc(var(--p)*1%),#e7e9f2 0);
+    display:grid;place-items:center;
+  }
+  .ring span{width:82px;height:82px;border-radius:50%;background:#fff;display:grid;place-items:center;
+    font-size:23px;font-weight:800;letter-spacing:-.02em}
+  .score-txt h2{margin:0 0 4px;font-size:21px;letter-spacing:-.01em}
+  .score-txt p{margin:0;color:var(--muted);font-size:14.5px}
+  table{width:100%;border-collapse:collapse;margin:20px 0 4px;font-size:14.5px}
+  th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}
+  th{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  td.num{font-variant-numeric:tabular-nums;text-align:right;width:70px}
+  .pill{display:inline-block;font-size:12px;font-weight:700;padding:1px 8px;border-radius:99px}
+  .pill.ok{background:var(--ok-soft);color:var(--ok)}
+  .pill.mid{background:#fff6e5;color:#a16207}
+  .pill.no{background:var(--no-soft);color:var(--no)}
+  .rev-list{margin:18px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+  .rev-list li{font-size:14.5px;background:#fbfbfe;border:1px solid var(--line);border-radius:10px;padding:11px 13px}
+  .rev-list b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+  footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:26px}
+  @media (max-width:520px){
+    .wrap{padding:20px 12px 60px}
+    .card{padding:18px 15px 16px;border-radius:13px}
+    .q{font-size:16.5px}
+    .opt{font-size:15px;padding:12px 12px}
+    .bar-inner{padding:0 12px}
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-inner">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="count" id="count"><b>1</b> / 26</div>
+    <div class="timer hidden" id="timer">50:00</div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header class="top">
+    <div class="kicker">Biologia · Botânica</div>
+    <h1>Simulado de Botânica</h1>
+    <p class="sub">Montado a partir dos slides da sua aula de Botânica. Os quatro grupos, ciclos de vida, raiz, caule, folha, flor e fruto.</p>
+  </header>
+
+  <div class="log" id="log">
+    <div class="log-head">
+      <span class="log-title">Registro de tentativas</span>
+      <div class="log-badges" id="logBadges"></div>
+      <button class="log-toggle" id="logToggle" type="button">Histórico</button>
+    </div>
+    <p class="log-note" id="logNote" hidden></p>
+    <ul class="log-list" id="logList" hidden></ul>
+    <div class="log-foot" id="logFoot" hidden>
+      <button class="log-clear" id="logClear" type="button">Apagar histórico</button>
+    </div>
+  </div>
+
+  <main id="stage"></main>
+
+<div class="modal" id="modal">
+  <div class="lesson" id="lesson"></div>
+</div>
+
+  <footer>Simulado de Botânica · funciona offline</footer>
+</div>
+
+<script>
+
+/* ============================================================
+   FIGURAS (SVG embutido, offline)
+   ============================================================ */
+const SVG_GRUPOS = `<div class="figura">
+<svg viewBox="0 0 430 200" role="img" aria-label="Os quatro grupos de plantas e as novidades evolutivas: vasos, semente, flor e fruto">
+  <text x="20" y="24" fill="#4b5060" font-size="12" font-weight="700">O QUE CADA GRUPO GANHOU</text>
+  <line x1="24" y1="96" x2="404" y2="96" stroke="#cbd5e1" stroke-width="3"/>
+  <polygon points="410,96 400,91 400,101" fill="#cbd5e1"/>
+  <circle cx="62" cy="96" r="9" fill="#94a3b8"/>
+  <text x="30" y="128" fill="#334155" font-size="11" font-weight="700">BRIOFITAS</text>
+  <text x="26" y="144" fill="#6b7280" font-size="9.5">sem vaso, sem semente</text>
+  <circle cx="168" cy="96" r="9" fill="#16a34a"/>
+  <text x="130" y="128" fill="#15803d" font-size="11" font-weight="700">PTERIDOFITAS</text>
+  <text x="140" y="144" fill="#6b7280" font-size="9.5">+ vasos</text>
+  <circle cx="270" cy="96" r="9" fill="#ea580c"/>
+  <text x="228" y="128" fill="#c2410c" font-size="11" font-weight="700">GIMNOSPERMAS</text>
+  <text x="243" y="144" fill="#6b7280" font-size="9.5">+ semente</text>
+  <circle cx="368" cy="96" r="9" fill="#4f46e5"/>
+  <text x="330" y="128" fill="#4338ca" font-size="11" font-weight="700">ANGIOSPERMAS</text>
+  <text x="336" y="144" fill="#6b7280" font-size="9.5">+ flor e fruto</text>
+  <text x="24" y="178" fill="#9ca3af" font-size="9.5">cada grupo carrega tudo do anterior</text>
+</svg>
+<span class="cap">A evolucao soma: <b>vasos</b> (pteridofitas) e depois <b>semente</b> (gimnospermas) e depois <b>flor e fruto</b> (angiospermas). Briofita nao tem nenhum dos tres.</span>
+</div>`;
+
+const SVG_CICLO = `<div class="figura">
+<svg viewBox="0 0 400 210" role="img" aria-label="Ciclo de vida das plantas: esporofito 2n faz meiose e forma esporos n, que viram gametofito n, que faz gametas e fecundacao forma o zigoto 2n">
+  <rect x="130" y="16" width="140" height="34" rx="8" fill="#eef0ff" stroke="#4f46e5" stroke-width="2"/>
+  <text x="200" y="38" fill="#4338ca" font-size="12" font-weight="700" text-anchor="middle">ESPOROFITO (2n)</text>
+  <path d="M270 33 Q340 33 340 105" fill="none" stroke="#4f46e5" stroke-width="2"/>
+  <polygon points="335,98 345,100 341,110" fill="#4f46e5"/>
+  <text x="348" y="70" fill="#4338ca" font-size="10">meiose</text>
+  <rect x="270" y="105" width="110" height="32" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="2"/>
+  <text x="325" y="126" fill="#15803d" font-size="11" font-weight="700" text-anchor="middle">ESPOROS (n)</text>
+  <path d="M270 121 Q200 121 200 160" fill="none" stroke="#16a34a" stroke-width="2"/>
+  <rect x="20" y="160" width="360" height="32" rx="8" fill="#fff7ed" stroke="#ea580c" stroke-width="2"/>
+  <text x="200" y="181" fill="#c2410c" font-size="11" font-weight="700" text-anchor="middle">GAMETOFITO (n) &#8594; gametas (n) &#8594; FECUNDACAO</text>
+  <path d="M20 176 Q-10 176 30 33" fill="none" stroke="#ea580c" stroke-width="2" stroke-dasharray="5 3"/>
+  <polygon points="24,42 36,36 30,26" fill="#ea580c"/>
+  <text x="2" y="110" fill="#c2410c" font-size="10" transform="rotate(-90 12 110)">zigoto 2n</text>
+</svg>
+<span class="cap">Esporofito (2n) faz <b>meiose</b> e solta esporos (n). O esporo vira gametofito (n), que faz gametas. A fecundacao forma o zigoto (2n), que cresce em esporofito.</span>
+</div>`;
+
+const SVG_ORGAOS = `<div class="figura">
+<svg viewBox="0 0 420 200" role="img" aria-label="Orgaos da planta: raiz com suas zonas, caule com nos e a flor com estame e pistilo">
+  <text x="14" y="20" fill="#4b5060" font-size="11" font-weight="700">RAIZ</text>
+  <line x1="40" y1="30" x2="40" y2="160" stroke="#4b5060" stroke-width="2.5"/>
+  <line x1="40" y1="30" x2="28" y2="44" stroke="#4b5060" stroke-width="1.6"/>
+  <line x1="40" y1="30" x2="52" y2="44" stroke="#4b5060" stroke-width="1.6"/>
+  <text x="52" y="46" fill="#6b7280" font-size="9">suberosa</text>
+  <text x="52" y="66" fill="#6b7280" font-size="9">pilifera</text>
+  <text x="52" y="86" fill="#6b7280" font-size="9">lisa</text>
+  <text x="52" y="106" fill="#6b7280" font-size="9">meristematica</text>
+  <text x="52" y="126" fill="#6b7280" font-size="9">coifa</text>
+  <line x1="48" y1="60" x2="40" y2="60" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="48" y1="80" x2="40" y2="80" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="48" y1="100" x2="40" y2="100" stroke="#cbd5e1" stroke-width="1"/>
+  <line x1="48" y1="120" x2="40" y2="120" stroke="#cbd5e1" stroke-width="1"/>
+  <ellipse cx="40" cy="160" rx="7" ry="9" fill="#94a3b8"/>
+  <text x="150" y="20" fill="#4b5060" font-size="11" font-weight="700">CAULE</text>
+  <line x1="185" y1="35" x2="185" y2="165" stroke="#16a34a" stroke-width="3"/>
+  <line x1="185" y1="70" x2="205" y2="55" stroke="#16a34a" stroke-width="2"/>
+  <line x1="185" y1="110" x2="165" y2="95" stroke="#16a34a" stroke-width="2"/>
+  <circle cx="185" cy="70" r="3.5" fill="#15803d"/>
+  <circle cx="185" cy="110" r="3.5" fill="#15803d"/>
+  <text x="210" y="72" fill="#6b7280" font-size="9">no</text>
+  <text x="210" y="112" fill="#6b7280" font-size="9">no</text>
+  <text x="152" y="132" fill="#9ca3af" font-size="9">entre no</text>
+  <text x="290" y="20" fill="#4b5060" font-size="11" font-weight="700">FLOR</text>
+  <circle cx="348" cy="62" r="17" fill="#fbcfe8" stroke="#db2777" stroke-width="2"/>
+  <line x1="348" y1="79" x2="348" y2="150" stroke="#4b5060" stroke-width="2.5"/>
+  <line x1="348" y1="100" x2="322" y2="86" stroke="#b45309" stroke-width="2"/>
+  <circle cx="320" cy="84" r="5" fill="#f59e0b"/>
+  <text x="296" y="76" fill="#b45309" font-size="9">antera</text>
+  <line x1="348" y1="110" x2="376" y2="92" stroke="#7c3aed" stroke-width="2"/>
+  <circle cx="378" cy="90" r="4.5" fill="#a78bfa"/>
+  <text x="368" y="82" fill="#6d28d9" font-size="9">estigma</text>
+  <text x="356" y="120" fill="#6b7280" font-size="9">ovario</text>
+  <text x="300" y="170" fill="#9ca3af" font-size="9">ovario &#8594; fruto</text>
+</svg>
+<span class="cap">Raiz: zonas de baixo para cima. Caule: nos e entre nos. Flor: <b>antera</b> produz polen (macho), <b>estigma</b> recebe (femea) e o <b>ovario</b> vira fruto.</span>
+</div>`;
+
+/* ============================================================
+   BANCO DE QUESTOES — 32 questoes de Botanica
+   ============================================================ */
+const QUESTIONS = [
+ {
+  "tema": "Os quatro grupos",
+  "enunciado": "Qual grupo de plantas NÃO possui vasos condutores de seiva (é avascular)?",
+  "conceito": "A chave é a <b>ordem das novidades evolutivas</b>: vasos condutores (pteridófitas) → semente (gimnospermas) → flor e fruto (angiospermas). Briófitas não têm nenhuma das três.",
+  "licao": "quatro-grupos",
+  "alternativas": [
+   {
+    "t": "Briófitas",
+    "ok": true,
+    "porque": "Só as briófitas são avasculares. Pteridófitas, gimnospermas e angiospermas têm xilema e floema."
+   },
+   {
+    "t": "Pteridófitas",
+    "ok": false,
+    "porque": "Pteridófita TEM vasos condutores — é justamente a novidade evolutiva dela em relação à briófita."
+   },
+   {
+    "t": "Gimnospermas",
+    "ok": false,
+    "porque": "Gimnosperma tem vasos e semente. É a planta mais complexa das três opções."
+   },
+   {
+    "t": "Angiospermas",
+    "ok": false,
+    "porque": "Angiosperma é o grupo mais derivado: tem vasos, semente, flor e fruto."
+   },
+   {
+    "t": "Plantas sem semente, mas com vasos",
+    "ok": false,
+    "porque": "Confunde com pteridófita: ter vasos e não ter semente é o caso da pteridófita. A briófita não tem nem vasos nem semente."
+   }
+  ],
+  "_orig": 1,
+  "figura": SVG_GRUPOS
+ },
+ {
+  "tema": "Os quatro grupos",
+  "enunciado": "A grande novidade evolutiva das pteridófitas em relação às briófitas foi:",
+  "conceito": "A chave é a <b>ordem das novidades evolutivas</b>: vasos condutores (pteridófitas) → semente (gimnospermas) → flor e fruto (angiospermas). Briófitas não têm nenhuma das três.",
+  "licao": "quatro-grupos",
+  "alternativas": [
+   {
+    "t": "a semente",
+    "ok": false,
+    "porque": "A semente apareceu nas gimnospermas, muito depois das pteridófitas."
+   },
+   {
+    "t": "a flor",
+    "ok": false,
+    "porque": "Flor é novidade das angiospermas, o grupo mais recente."
+   },
+   {
+    "t": "os vasos condutores (xilema e floema)",
+    "ok": true,
+    "porque": "Ordem das novidades: vasos (pteridófitas) → sementes (gimnospermas) → flores e frutos (angiospermas)."
+   },
+   {
+    "t": "o fruto",
+    "ok": false,
+    "porque": "Fruto também é das angiospermas. As pteridófitas não têm nem semente."
+   },
+   {
+    "t": "a independência total da água",
+    "ok": false,
+    "porque": "A independência da água veio com a semente e o pólen (gimnospermas/angiospermas), não com os vasos."
+   }
+  ],
+  "_orig": 2
+ },
+ {
+  "tema": "Os quatro grupos",
+  "enunciado": "As gimnospermas são plantas que possuem:",
+  "conceito": "A chave é a <b>ordem das novidades evolutivas</b>: vasos condutores (pteridófitas) → semente (gimnospermas) → flor e fruto (angiospermas). Briófitas não têm nenhuma das três.",
+  "licao": "quatro-grupos",
+  "alternativas": [
+   {
+    "t": "flores e frutos",
+    "ok": false,
+    "porque": "Isso caracteriza angiosperma. Gimnosperma não forma fruto nem flor verdadeira."
+   },
+   {
+    "t": "esporos, mas não sementes",
+    "ok": false,
+    "porque": "Isso é pteridófita. Gimnosperma tem semente — o nome já diz \"sperma\"."
+   },
+   {
+    "t": "vasos condutores, mas não sementes",
+    "ok": false,
+    "porque": "Pteridófita. A gimnosperma tem vasos <b>e</b> semente."
+   },
+   {
+    "t": "sementes, mas não têm frutos",
+    "ok": true,
+    "porque": "Gimnosperma = semente nua. Tem semente, mas ela não fica dentro de um fruto."
+   },
+   {
+    "t": "vasos condutores, mas não sementes",
+    "ok": false,
+    "porque": "Isso descreve a pteridófita. A gimnosperma TEM semente — ela só não tem fruto envolvendo."
+   }
+  ],
+  "_orig": 3
+ },
+ {
+  "tema": "Os quatro grupos",
+  "enunciado": "O que caracteriza as angiospermas?",
+  "conceito": "A chave é a <b>ordem das novidades evolutivas</b>: vasos condutores (pteridófitas) → semente (gimnospermas) → flor e fruto (angiospermas). Briófitas não têm nenhuma das três.",
+  "licao": "quatro-grupos",
+  "alternativas": [
+   {
+    "t": "Não têm vasos condutores",
+    "ok": false,
+    "porque": "Angiosperma tem vasos — são as plantas mais complexas do grupo."
+   },
+   {
+    "t": "Reproduzem-se só por esporos",
+    "ok": false,
+    "porque": "Só briófita e pteridófita se reproduzem por esporos. Angiosperma usa semente."
+   },
+   {
+    "t": "Têm flores e frutos que envolvem a semente",
+    "ok": true,
+    "porque": "Angio = bolsa. A semente fica protegida dentro do fruto, que vem da flor."
+   },
+   {
+    "t": "Têm a semente exposta, sem proteção",
+    "ok": false,
+    "porque": "Semente exposta é característica da <b>gimnosperma</b>. Angiosperma protege no fruto."
+   },
+   {
+    "t": "têm semente exposta em cone",
+    "ok": false,
+    "porque": "Semente exposta em cone é gimnosperma. Angiosperma tem a semente dentro do fruto."
+   }
+  ],
+  "_orig": 4
+ },
+ {
+  "tema": "Os quatro grupos",
+  "enunciado": "As plantas criptógamas (órgãos reprodutivos escondidos, sem flores nem sementes) são:",
+  "conceito": "A chave é a <b>ordem das novidades evolutivas</b>: vasos condutores (pteridófitas) → semente (gimnospermas) → flor e fruto (angiospermas). Briófitas não têm nenhuma das três.",
+  "licao": "quatro-grupos",
+  "alternativas": [
+   {
+    "t": "gimnospermas e angiospermas",
+    "ok": false,
+    "porque": "Essas são as <b>fanerógamas</b> (com semente). Criptógama é o oposto."
+   },
+   {
+    "t": "apenas as briófitas",
+    "ok": false,
+    "porque": "Incompleto: falta a pteridófita, que também é criptógama."
+   },
+   {
+    "t": "briófitas e pteridófitas",
+    "ok": true,
+    "porque": "Criptógamas = briófitas + pteridófitas. Elas se reproduzem por esporos. Fanerógamas = gimnospermas + angiospermas."
+   },
+   {
+    "t": "apenas as angiospermas",
+    "ok": false,
+    "porque": "Angiosperma é fanerógama, o oposto de criptógama."
+   },
+   {
+    "t": "briófitas e gimnospermas",
+    "ok": false,
+    "porque": "Mistura um grupo sem semente com um grupo com semente. Criptógamas são as sem flor e sem semente: briófitas + pteridófitas."
+   }
+  ],
+  "_orig": 5
+ },
+ {
+  "tema": "Os quatro grupos",
+  "enunciado": "Fanerógamas, também chamadas espermatófitas, são as plantas que:",
+  "conceito": "A chave é a <b>ordem das novidades evolutivas</b>: vasos condutores (pteridófitas) → semente (gimnospermas) → flor e fruto (angiospermas). Briófitas não têm nenhuma das três.",
+  "licao": "quatro-grupos",
+  "alternativas": [
+   {
+    "t": "se reproduzem por esporos",
+    "ok": false,
+    "porque": "Quem se reproduz por esporo é criptógama (briófita e pteridófita)."
+   },
+   {
+    "t": "não têm vasos condutores",
+    "ok": false,
+    "porque": "Isso é só a briófita. Gimnosperma e angiosperma, que são espermatófitas, têm vasos."
+   },
+   {
+    "t": "produzem sementes",
+    "ok": true,
+    "porque": "Espermatófitas = plantas com sementes: gimnospermas e angiospermas."
+   },
+   {
+    "t": "vivem apenas em locais úmidos",
+    "ok": false,
+    "porque": "Semente e pólen libertaram essas plantas da dependência de água."
+   },
+   {
+    "t": "têm flores vistosas",
+    "ok": false,
+    "porque": "Fanerógama = órgão reprodutivo aparente e semente. Mas o critério da questão é ter semente (espermatófita), não ter flor vistosa — gimnosperma tem semente e não tem flor."
+   }
+  ],
+  "_orig": 6
+ },
+ {
+  "tema": "Os quatro grupos",
+  "enunciado": "O nome gimnosperma vem do grego gymnos (nu) e sperma (semente). Isso significa que:",
+  "conceito": "A chave é a <b>ordem das novidades evolutivas</b>: vasos condutores (pteridófitas) → semente (gimnospermas) → flor e fruto (angiospermas). Briófitas não têm nenhuma das três.",
+  "licao": "quatro-grupos",
+  "alternativas": [
+   {
+    "t": "a semente fica dentro do fruto",
+    "ok": false,
+    "porque": "Isso é <b>angio</b>sperma (angio = vaso/bolsa). Gimnosperma é o contrário."
+   },
+   {
+    "t": "a semente fica exposta, não está dentro de um fruto",
+    "ok": true,
+    "porque": "Gimnosperma = semente nua, exposta. A semente das angiospermas fica dentro do fruto."
+   },
+   {
+    "t": "a planta não tem semente",
+    "ok": false,
+    "porque": "Gimnosperma tem semente: \"sperma\" é semente. Ela é só nua."
+   },
+   {
+    "t": "a planta não tem folhas",
+    "ok": false,
+    "porque": "Gimnosperma tem folhas (as agulhas do pinheiro, por exemplo)."
+   },
+   {
+    "t": "a semente é produzida sem fecundação",
+    "ok": false,
+    "porque": "Gimnosperma tem fecundação normal. O \"gymnos\" se refere à semente ficar exposta, não à ausência de fecundação."
+   }
+  ],
+  "_orig": 7
+ },
+ {
+  "tema": "Os quatro grupos",
+  "enunciado": "A pinha do pinheiro é:",
+  "conceito": "A chave é a <b>ordem das novidades evolutivas</b>: vasos condutores (pteridófitas) → semente (gimnospermas) → flor e fruto (angiospermas). Briófitas não têm nenhuma das três.",
+  "licao": "quatro-grupos",
+  "alternativas": [
+   {
+    "t": "um fruto carnoso",
+    "ok": false,
+    "porque": "Gimnosperma não forma fruto. Fruto é exclusivo das angiospermas."
+   },
+   {
+    "t": "uma flor completa",
+    "ok": false,
+    "porque": "Flor completa é angiosperma. Gimnosperma tem estróbilo."
+   },
+   {
+    "t": "uma raiz modificada",
+    "ok": false,
+    "porque": "A pinha é estrutura reprodutiva aérea, não raiz."
+   },
+   {
+    "t": "um estróbilo (cone)",
+    "ok": true,
+    "porque": "A pinha é o estróbilo feminino (cone). Gimnospermas não fazem fruto."
+   },
+   {
+    "t": "um fruto seco",
+    "ok": false,
+    "porque": "A pinha não é fruto: gimnosperma não forma fruto. Ela é o estróbilo (cone) que abriga os óvulos/sementes."
+   }
+  ],
+  "_orig": 8
+ },
+ {
+  "tema": "Xilema e floema",
+  "enunciado": "O xilema é o tecido que conduz:",
+  "conceito": "<b>Xilema</b> leva seiva bruta (água + sais) das raízes para cima. <b>Floema</b> leva seiva elaborada (açúcares feitos nas folhas) para o resto da planta. Macete: X de água, F de fartura.",
+  "licao": "xilema-floema",
+  "alternativas": [
+   {
+    "t": "açúcares das folhas para a raiz",
+    "ok": false,
+    "porque": "Esse é o floema (seiva elaborada). O xilema faz o caminho inverso."
+   },
+   {
+    "t": "gás oxigênio para as raízes",
+    "ok": false,
+    "porque": "O oxigênio entra por estômatos e lenticelas, não pelo xilema."
+   },
+   {
+    "t": "esporos para as folhas",
+    "ok": false,
+    "porque": "Esporo é estrutura de reprodução, não é transportado por vaso."
+   },
+   {
+    "t": "água e sais minerais das raízes para as folhas",
+    "ok": true,
+    "porque": "Xilema = seiva bruta (água + sais minerais), das raízes às folhas."
+   },
+   {
+    "t": "gás carbônico para a fotossíntese",
+    "ok": false,
+    "porque": "O CO₂ entra pelos estômatos das folhas, não pelo xilema. O xilema transporta água e sais."
+   }
+  ],
+  "_orig": 9
+ },
+ {
+  "tema": "Xilema e floema",
+  "enunciado": "A seiva elaborada, rica em açúcares produzidos nas folhas, é conduzida pelo:",
+  "conceito": "<b>Xilema</b> leva seiva bruta (água + sais) das raízes para cima. <b>Floema</b> leva seiva elaborada (açúcares feitos nas folhas) para o resto da planta. Macete: X de água, F de fartura.",
+  "licao": "xilema-floema",
+  "alternativas": [
+   {
+    "t": "floema",
+    "ok": true,
+    "porque": "Floema leva a seiva elaborada (compostos orgânicos). Macete: F de fartura/comida."
+   },
+   {
+    "t": "xilema",
+    "ok": false,
+    "porque": "Xilema leva seiva bruta: água e sais das raízes para as folhas."
+   },
+   {
+    "t": "cutícula",
+    "ok": false,
+    "porque": "Cutícula é a camada cerosa que evita perda de água, não transporte."
+   },
+   {
+    "t": "estômato",
+    "ok": false,
+    "porque": "Estômato é a abertura para trocas gasosas. Não conduz seiva."
+   },
+   {
+    "t": "xilema",
+    "ok": false,
+    "porque": "Xilema leva seiva bruta (água e sais). A elaborada, com açúcares, vai pelo floema."
+   }
+  ],
+  "_orig": 10
+ },
+ {
+  "tema": "Ciclos de vida",
+  "enunciado": "Os esporos das plantas são formados por qual processo e em qual fase?",
+  "conceito": "Alternância de gerações: o <b>gametófito (n)</b> produz gametas por mitose; o <b>esporófito (2n)</b> produz esporos por meiose. Nas briófitas o gametófito domina; nas vasculares, o esporófito.",
+  "licao": "ciclos-vida",
+  "alternativas": [
+   {
+    "t": "meiose, no esporófito",
+    "ok": true,
+    "porque": "O esporófito (2n) faz meiose e produz esporos (n)."
+   },
+   {
+    "t": "mitose, no gametófito",
+    "ok": false,
+    "porque": "Lembre: gameta vem de mitose no gametófito; esporo vem de meiose no esporófito."
+   },
+   {
+    "t": "fecundação, no gametófito",
+    "ok": false,
+    "porque": "Fecundação junta gametas e forma o zigoto, não esporo."
+   },
+   {
+    "t": "mitose, no esporófito",
+    "ok": false,
+    "porque": "No esporófito o processo é <b>meiose</b>: é ela que reduz 2n para n."
+   },
+   {
+    "t": "mitose, no gametófito",
+    "ok": false,
+    "porque": "É o gameta que se forma por mitose no gametófito. O esporo vem de meiose no esporófito."
+   }
+  ],
+  "_orig": 11,
+  "figura": SVG_CICLO
+ },
+ {
+  "tema": "Ciclos de vida",
+  "enunciado": "Nas briófitas, a fase duradoura (a plantinha verde que vemos) é:",
+  "conceito": "Alternância de gerações: o <b>gametófito (n)</b> produz gametas por mitose; o <b>esporófito (2n)</b> produz esporos por meiose. Nas briófitas o gametófito domina; nas vasculares, o esporófito.",
+  "licao": "ciclos-vida",
+  "alternativas": [
+   {
+    "t": "o gametófito (n)",
+    "ok": true,
+    "porque": "Nas briófitas o gametófito (n) domina. O esporófito é temporário."
+   },
+   {
+    "t": "o esporófito (2n)",
+    "ok": false,
+    "porque": "Pegadinha: nas vasculares o esporófito domina, mas nas briófitas quem domina é o gametófito (n)."
+   },
+   {
+    "t": "o zigoto",
+    "ok": false,
+    "porque": "O zigoto é apenas a primeira célula 2n, formada na fecundação. Não é fase duradoura."
+   },
+   {
+    "t": "o esporo",
+    "ok": false,
+    "porque": "O esporo é uma célula de dispersão, não a planta."
+   },
+   {
+    "t": "o esporófito (2n)",
+    "ok": false,
+    "porque": "Nas briófitas é o contrário das vasculares: quem domina é o gametófito (n). O esporófito é a hastezinha temporária."
+   }
+  ],
+  "_orig": 12
+ },
+ {
+  "tema": "Ciclos de vida",
+  "enunciado": "Nas plantas vasculares (samambaia, pinheiro, flores), a fase duradoura é:",
+  "conceito": "Alternância de gerações: o <b>gametófito (n)</b> produz gametas por mitose; o <b>esporófito (2n)</b> produz esporos por meiose. Nas briófitas o gametófito domina; nas vasculares, o esporófito.",
+  "licao": "ciclos-vida",
+  "alternativas": [
+   {
+    "t": "o gametófito (n)",
+    "ok": false,
+    "porque": "Isso vale para briófitas. Nas vasculares o gametófito é pequeno e passageiro."
+   },
+   {
+    "t": "o esporófito (2n)",
+    "ok": true,
+    "porque": "Nas traqueófitas o esporófito (2n) domina. O gametófito é pequeno e temporário."
+   },
+   {
+    "t": "o anterozoide",
+    "ok": false,
+    "porque": "Anterozoide é o gameta masculino, uma célula, não uma fase."
+   },
+   {
+    "t": "o prótalo",
+    "ok": false,
+    "porque": "O prótalo é o gametófito da samambaia — pequeno e temporário, não a fase duradoura."
+   },
+   {
+    "t": "o gametófito (n)",
+    "ok": false,
+    "porque": "Gametófito dominante é o caso das briófitas. Nas vasculares, a planta grande que vemos é o esporófito (2n)."
+   }
+  ],
+  "_orig": 13
+ },
+ {
+  "tema": "Ciclos de vida",
+  "enunciado": "As briófitas dependem da água para a reprodução porque:",
+  "conceito": "Alternância de gerações: o <b>gametófito (n)</b> produz gametas por mitose; o <b>esporófito (2n)</b> produz esporos por meiose. Nas briófitas o gametófito domina; nas vasculares, o esporófito.",
+  "licao": "ciclos-vida",
+  "alternativas": [
+   {
+    "t": "os esporos só germinam dentro da água",
+    "ok": false,
+    "porque": "Os esporos germinam em ambiente úmido, mas não precisam estar submersos. A dependência real é do gameta."
+   },
+   {
+    "t": "o anterozoide precisa nadar até o gameta feminino",
+    "ok": true,
+    "porque": "O gameta masculino (anterozoide) é flagelado e nada até a oosfera. Sem água, não há fecundação."
+   },
+   {
+    "t": "não têm clorofila",
+    "ok": false,
+    "porque": "Briófitas têm clorofila e fazem fotossíntese normalmente."
+   },
+   {
+    "t": "não têm raízes",
+    "ok": false,
+    "porque": "É verdade que não têm raiz verdadeira (têm rizoide), mas isso não é o motivo da dependência de água na reprodução."
+   },
+   {
+    "t": "os esporos precisam de água para se formar",
+    "ok": false,
+    "porque": "Os esporos se formam por meiose, sem água. A dependência é do anterozoide flagelado, que precisa nadar."
+   }
+  ],
+  "_orig": 14
+ },
+ {
+  "tema": "Ciclos de vida",
+  "enunciado": "O prótalo da samambaia é:",
+  "conceito": "Alternância de gerações: o <b>gametófito (n)</b> produz gametas por mitose; o <b>esporófito (2n)</b> produz esporos por meiose. Nas briófitas o gametófito domina; nas vasculares, o esporófito.",
+  "licao": "ciclos-vida",
+  "alternativas": [
+   {
+    "t": "o esporófito jovem",
+    "ok": false,
+    "porque": "O esporófito jovem já vem do zigoto. O prótalo é a fase anterior, que produz gametas."
+   },
+   {
+    "t": "o gametófito (n)",
+    "ok": true,
+    "porque": "O esporo germina e forma o prótalo, que é o gametófito (n), com anterídio e arquegônio."
+   },
+   {
+    "t": "um tipo de fruto",
+    "ok": false,
+    "porque": "Pteridófita não tem fruto nem semente."
+   },
+   {
+    "t": "o esporângio",
+    "ok": false,
+    "porque": "Esporângio é a estrutura que produz esporos, presente no esporófito. O prótalo é o gametófito."
+   },
+   {
+    "t": "a fase 2n que produz esporos",
+    "ok": false,
+    "porque": "Quem produz esporos é o esporófito (2n). O prótalo é o gametófito (n), que produz gametas."
+   }
+  ],
+  "_orig": 15
+ },
+ {
+  "tema": "Ciclos de vida",
+  "enunciado": "O desenvolvimento da semente e do grão de pólen foi uma grande conquista evolutiva porque:",
+  "conceito": "Alternância de gerações: o <b>gametófito (n)</b> produz gametas por mitose; o <b>esporófito (2n)</b> produz esporos por meiose. Nas briófitas o gametófito domina; nas vasculares, o esporófito.",
+  "licao": "ciclos-vida",
+  "alternativas": [
+   {
+    "t": "tornou as plantas independentes da água para a fecundação",
+    "ok": true,
+    "porque": "Pólen e semente deixaram a fecundação independente da água, e as plantas dominaram o ambiente terrestre."
+   },
+   {
+    "t": "fez as plantas produzirem esporos",
+    "ok": false,
+    "porque": "Esporo já existia desde as briófitas. A novidade foi a semente."
+   },
+   {
+    "t": "eliminou a fotossíntese",
+    "ok": false,
+    "porque": "A fotossíntese continuou — é a base da vida da planta."
+   },
+   {
+    "t": "criou os vasos condutores",
+    "ok": false,
+    "porque": "Vasos vieram antes, nas pteridófitas."
+   },
+   {
+    "t": "permitiu que as plantas voltassem a viver na água",
+    "ok": false,
+    "porque": "Foi o oposto: semente e pólen libertaram a reprodução da água, permitindo conquistar o ambiente terrestre."
+   }
+  ],
+  "_orig": 16
+ },
+ {
+  "tema": "Ciclos de vida",
+  "enunciado": "Na dupla fecundação das angiospermas formam-se:",
+  "conceito": "Alternância de gerações: o <b>gametófito (n)</b> produz gametas por mitose; o <b>esporófito (2n)</b> produz esporos por meiose. Nas briófitas o gametófito domina; nas vasculares, o esporófito.",
+  "licao": "ciclos-vida",
+  "alternativas": [
+   {
+    "t": "dois zigotos (2n)",
+    "ok": false,
+    "porque": "Só um zigoto se forma. A segunda fecundação gera o endosperma."
+   },
+   {
+    "t": "zigoto (2n) e endosperma (3n)",
+    "ok": true,
+    "porque": "Uma célula espermática + oosfera = zigoto (2n). A outra + núcleos polares = endosperma (3n), reserva de alimento."
+   },
+   {
+    "t": "esporo (n) e gameta (n)",
+    "ok": false,
+    "porque": "Dupla fecundação envolve gametas e núcleos polares, não esporos."
+   },
+   {
+    "t": "zigoto (n) e endosperma (2n)",
+    "ok": false,
+    "porque": "Inverteu as ploidias: zigoto é 2n (n + n) e endosperma é 3n."
+   },
+   {
+    "t": "um zigoto (3n) e um endosperma (2n)",
+    "ok": false,
+    "porque": "Inverteu os ploidias. Zigoto é 2n (n+n) e endosperma é 3n (n + 2n dos núcleos polares)."
+   }
+  ],
+  "_orig": 17
+ },
+ {
+  "tema": "Detalhes dos grupos",
+  "enunciado": "Musgos, hepáticas e antóceros pertencem ao grupo das:",
+  "conceito": "Cada grupo tem seus representantes típicos: briófitas (musgos, hepáticas, antóceros), pteridófitas (samambaias, avencas, cavalinhas), gimnospermas (coníferas em maioria), angiospermas (a maioria das plantas).",
+  "licao": "detalhes-grupos",
+  "alternativas": [
+   {
+    "t": "pteridófitas",
+    "ok": false,
+    "porque": "Os três filos das briófitas são Bryophyta (musgos), Marchantiophyta (hepáticas) e Anthocerophyta (antóceros)."
+   },
+   {
+    "t": "gimnospermas",
+    "ok": false,
+    "porque": "Gimnosperma é pinheiro, araucária, cica. Musgo não tem semente."
+   },
+   {
+    "t": "briófitas",
+    "ok": true,
+    "porque": "Os três filos das briófitas: Bryophyta (musgos), Marchantiophyta (hepáticas), Anthocerophyta (antóceros)."
+   },
+   {
+    "t": "angiospermas",
+    "ok": false,
+    "porque": "Angiosperma tem flor e fruto. Musgo não tem nenhum dos dois."
+   },
+   {
+    "t": "pteridófitas",
+    "ok": false,
+    "porque": "Musgo, hepática e antócero são os três filos das briófitas. Pteridófita é samambaia, avenca, cavalinha."
+   }
+  ],
+  "_orig": 18
+ },
+ {
+  "tema": "Detalhes dos grupos",
+  "enunciado": "Rizoide, cauloide e filoide são estruturas simples das briófitas que fazem o papel de:",
+  "conceito": "Cada grupo tem seus representantes típicos: briófitas (musgos, hepáticas, antóceros), pteridófitas (samambaias, avencas, cavalinhas), gimnospermas (coníferas em maioria), angiospermas (a maioria das plantas).",
+  "licao": "detalhes-grupos",
+  "alternativas": [
+   {
+    "t": "flor, fruto e semente",
+    "ok": false,
+    "porque": "Rizoide, cauloide e filoide são as versões simples de raiz, caule e folha."
+   },
+   {
+    "t": "xilema, floema e câmbio",
+    "ok": false,
+    "porque": "Briófita não tem vasos condutores."
+   },
+   {
+    "t": "pólen, óvulo e antera",
+    "ok": false,
+    "porque": "Essas são estruturas reprodutivas de plantas com semente."
+   },
+   {
+    "t": "raiz, caule e folha",
+    "ok": true,
+    "porque": "Rizoide ≈ raiz, cauloide ≈ caule, filoide ≈ folha. As briófitas não têm raiz, caule e folha verdadeiros."
+   },
+   {
+    "t": "flor, fruto e semente",
+    "ok": false,
+    "porque": "Briófita não tem flor, fruto nem semente. Rizoide, cauloide e filoide são as versões simples de raiz, caule e folha."
+   }
+  ],
+  "_orig": 19
+ },
+ {
+  "tema": "Detalhes dos grupos",
+  "enunciado": "Samambaias, avencas e cavalinhas são exemplos de:",
+  "conceito": "Cada grupo tem seus representantes típicos: briófitas (musgos, hepáticas, antóceros), pteridófitas (samambaias, avencas, cavalinhas), gimnospermas (coníferas em maioria), angiospermas (a maioria das plantas).",
+  "licao": "detalhes-grupos",
+  "alternativas": [
+   {
+    "t": "briófitas",
+    "ok": false,
+    "porque": "Samambaia tem vaso condutor e não tem semente: é pteridófita."
+   },
+   {
+    "t": "gimnospermas",
+    "ok": false,
+    "porque": "Gimnosperma tem semente nua (pinheiro, araucária)."
+   },
+   {
+    "t": "pteridófitas",
+    "ok": true,
+    "porque": "Pteridófitas: plantas vasculares sem sementes (criptógamas)."
+   },
+   {
+    "t": "angiospermas",
+    "ok": false,
+    "porque": "Angiosperma tem flor e fruto (mangueira, laranjeira)."
+   },
+   {
+    "t": "briófitas",
+    "ok": false,
+    "porque": "Samambaia tem vasos condutores, então é pteridófita. Briófita é o musgo."
+   }
+  ],
+  "_orig": 20
+ },
+ {
+  "tema": "Detalhes dos grupos",
+  "enunciado": "Entre os filos das gimnospermas, o maior grupo (com mais de 600 espécies), que inclui pinheiros e sequoias, é o:",
+  "conceito": "Cada grupo tem seus representantes típicos: briófitas (musgos, hepáticas, antóceros), pteridófitas (samambaias, avencas, cavalinhas), gimnospermas (coníferas em maioria), angiospermas (a maioria das plantas).",
+  "licao": "detalhes-grupos",
+  "alternativas": [
+   {
+    "t": "Ginkgophyta",
+    "ok": false,
+    "porque": "Ginkgophyta tem uma única espécie viva (Ginkgo biloba)."
+   },
+   {
+    "t": "Cycadophyta",
+    "ok": false,
+    "porque": "Cycadophyta são as cicadáceas, grupo pequeno."
+   },
+   {
+    "t": "Coniferophyta",
+    "ok": true,
+    "porque": "Coniferophyta = coníferas, o maior grupo de gimnospermas."
+   },
+   {
+    "t": "Gnetophyta",
+    "ok": false,
+    "porque": "Gnetophyta tem poucos gêneros (Gnetum, Ephedra, Welwitschia)."
+   },
+   {
+    "t": "Anthophyta",
+    "ok": false,
+    "porque": "Anthophyta é o filo das angiospermas (plantas com flor). O maior filo de gimnospermas é Coniferophyta."
+   }
+  ],
+  "_orig": 21
+ },
+ {
+  "tema": "Raiz",
+  "enunciado": "Na raiz, a região que tem os pelos absorventes e absorve a água do solo é a zona:",
+  "conceito": "A raiz fixa e absorve. Na zona <b>pilífera</b> estão os pelos absorventes. Os tipos especiais (haustório, pneumatóforo, escora, estranguladora, grampiforme, tabular) têm funções próprias.",
+  "licao": "raiz",
+  "alternativas": [
+   {
+    "t": "lisa",
+    "ok": false,
+    "porque": "A ordem de baixo para cima é: coifa → meristemática → lisa → <b>pilífera</b> → suberosa."
+   },
+   {
+    "t": "pilífera",
+    "ok": true,
+    "porque": "Zona pilífera = com pelos. Ordem de baixo para cima: coifa, meristemática, lisa, pilífera, suberosa."
+   },
+   {
+    "t": "meristemática",
+    "ok": false,
+    "porque": "A meristemática é onde as células se multiplicam por mitose."
+   },
+   {
+    "t": "suberosa",
+    "ok": false,
+    "porque": "A suberosa é onde saem as raízes secundárias."
+   },
+   {
+    "t": "lisa",
+    "ok": false,
+    "porque": "A zona lisa só alonga a raiz. Quem tem pelos absorventes é a pilífera."
+   }
+  ],
+  "_orig": 22
+ },
+ {
+  "tema": "Raiz",
+  "enunciado": "As raízes que crescem para fora do solo nos manguezais, ajudando na respiração, chamam-se:",
+  "conceito": "A raiz fixa e absorve. Na zona <b>pilífera</b> estão os pelos absorventes. Os tipos especiais (haustório, pneumatóforo, escora, estranguladora, grampiforme, tabular) têm funções próprias.",
+  "licao": "raiz",
+  "alternativas": [
+   {
+    "t": "haustórios",
+    "ok": false,
+    "porque": "Haustório é raiz de planta parasita, que penetra no hospedeiro."
+   },
+   {
+    "t": "pneumatóforos",
+    "ok": true,
+    "porque": "Pneumatóforos fazem a aeração em solos pobres em oxigênio."
+   },
+   {
+    "t": "raízes tuberosas",
+    "ok": false,
+    "porque": "Tuberosa armazena amido (batata-doce, mandioca)."
+   },
+   {
+    "t": "raízes escoras",
+    "ok": false,
+    "porque": "Quem cresce para fora do solo para respirar é o <b>pneumatóforo</b> (pneumo = ar)."
+   },
+   {
+    "t": "raízes escoras",
+    "ok": false,
+    "porque": "Escora dá suporte. Quem cresce para fora do solo para respirar é o pneumatóforo."
+   }
+  ],
+  "_orig": 23
+ },
+ {
+  "tema": "Raiz",
+  "enunciado": "Haustórios são raízes especiais encontradas em plantas:",
+  "conceito": "A raiz fixa e absorve. Na zona <b>pilífera</b> estão os pelos absorventes. Os tipos especiais (haustório, pneumatóforo, escora, estranguladora, grampiforme, tabular) têm funções próprias.",
+  "licao": "raiz",
+  "alternativas": [
+   {
+    "t": "parasitas",
+    "ok": true,
+    "porque": "Haustórios penetram na planta hospedeira e retiram as substâncias de que a parasita precisa."
+   },
+   {
+    "t": "aquáticas",
+    "ok": false,
+    "porque": "Haustório penetra no tecido da planta hospedeira e retira água e nutrientes — típico de parasita."
+   },
+   {
+    "t": "trepadeiras",
+    "ok": false,
+    "porque": "Trepadeira usa gavinhas ou raízes grampiformes para se fixar, não haustório."
+   },
+   {
+    "t": "carnívoras",
+    "ok": false,
+    "porque": "Carnívora captura insetos pelas folhas modificadas, não por raiz sugadora."
+   },
+   {
+    "t": "aquáticas",
+    "ok": false,
+    "porque": "Haustório penetra na planta hospedeira para roubar nutrientes — é raiz de planta parasita (como o cipó-chumbo)."
+   }
+  ],
+  "_orig": 24
+ },
+ {
+  "tema": "Raiz",
+  "enunciado": "A raiz com muitas ramificações finas do mesmo tamanho, sem raiz principal (como a do milho), é do tipo:",
+  "conceito": "A raiz fixa e absorve. Na zona <b>pilífera</b> estão os pelos absorventes. Os tipos especiais (haustório, pneumatóforo, escora, estranguladora, grampiforme, tabular) têm funções próprias.",
+  "licao": "raiz",
+  "alternativas": [
+   {
+    "t": "pivotante",
+    "ok": false,
+    "porque": "A raiz do milho é fasciculada: muitas raízes finas do mesmo tamanho, sem principal."
+   },
+   {
+    "t": "tabular",
+    "ok": false,
+    "porque": "Tabular é uma raiz grande na base do tronco, para sustentação."
+   },
+   {
+    "t": "estranguladora",
+    "ok": false,
+    "porque": "Estranguladora é a da mata-pau, que envolve a árvore hospedeira."
+   },
+   {
+    "t": "fasciculada",
+    "ok": true,
+    "porque": "Fasciculada = cabeleira, sem raiz principal. Pivotante (axial) tem uma raiz principal grossa."
+   },
+   {
+    "t": "pivotante",
+    "ok": false,
+    "porque": "Pivotante tem uma raiz principal grossa. Fasciculada é a \"cabeleira\", sem raiz principal."
+   }
+  ],
+  "_orig": 25
+ },
+ {
+  "tema": "Caule",
+  "enunciado": "A batata-inglesa é um exemplo de qual tipo de caule?",
+  "conceito": "O caule sustenta e liga folhas às raízes. Tem nós e entrenós. Os tipos se dividem em aéreos (tronco, estipe, haste, colmo, trepador, rastejante), subterrâneos (rizoma, bulbo, tubérculo) e aquático.",
+  "licao": "caule",
+  "alternativas": [
+   {
+    "t": "rizoma",
+    "ok": false,
+    "porque": "Rizoma é caule subterrâneo horizontal com nós bem visíveis (gengibre, bananeira)."
+   },
+   {
+    "t": "bulbo",
+    "ok": false,
+    "porque": "Bulbo é o \"prato\" com catáfilos, como cebola e alho."
+   },
+   {
+    "t": "estolho",
+    "ok": false,
+    "porque": "Estolho rasteja sobre o solo (morangueiro)."
+   },
+   {
+    "t": "tubérculo",
+    "ok": true,
+    "porque": "Tubérculo: caule subterrâneo inchado, cheio de amido, com gemas. Já a batata-doce é raiz tuberosa."
+   },
+   {
+    "t": "raiz tuberosa",
+    "ok": false,
+    "porque": "A batata-doce é raiz tuberosa; a batata-inglesa é caule (tubérculo), com gemas — por isso dá para plantar um pedaço dela."
+   }
+  ],
+  "_orig": 26
+ },
+ {
+  "tema": "Caule",
+  "enunciado": "O caule do morangueiro, que rasteja e cria raízes nos nós, chama-se:",
+  "conceito": "O caule sustenta e liga folhas às raízes. Tem nós e entrenós. Os tipos se dividem em aéreos (tronco, estipe, haste, colmo, trepador, rastejante), subterrâneos (rizoma, bulbo, tubérculo) e aquático.",
+  "licao": "caule",
+  "alternativas": [
+   {
+    "t": "estipe",
+    "ok": false,
+    "porque": "Estipe é o caule das palmeiras, sem ramos."
+   },
+   {
+    "t": "colmo",
+    "ok": false,
+    "porque": "Colmo tem gomos (bambu, cana-de-açúcar)."
+   },
+   {
+    "t": "tronco",
+    "ok": false,
+    "porque": "Tronco é lenhoso e ramificado, como o da mangueira."
+   },
+   {
+    "t": "estolho",
+    "ok": true,
+    "porque": "Estolho é um tipo de caule rastejante."
+   },
+   {
+    "t": "rizoma",
+    "ok": false,
+    "porque": "Rizoma é grosso e horizontal, subterrâneo (bananeira, gengibre). Estolho rasteja sobre o solo criando raízes nos nós."
+   }
+  ],
+  "_orig": 27
+ },
+ {
+  "tema": "Caule",
+  "enunciado": "O caule das palmeiras, sem ramificações e com folhas concentradas no ápice, chama-se:",
+  "conceito": "O caule sustenta e liga folhas às raízes. Tem nós e entrenós. Os tipos se dividem em aéreos (tronco, estipe, haste, colmo, trepador, rastejante), subterrâneos (rizoma, bulbo, tubérculo) e aquático.",
+  "licao": "caule",
+  "alternativas": [
+   {
+    "t": "estipe",
+    "ok": true,
+    "porque": "Estipe = palmeiras. Colmo = bambu e cana-de-açúcar (com gomos). Haste = ervas."
+   },
+   {
+    "t": "colmo",
+    "ok": false,
+    "porque": "Palmeira tem <b>estipe</b>: caule sem ramificação e com folhas concentradas no ápice."
+   },
+   {
+    "t": "haste",
+    "ok": false,
+    "porque": "Haste é macia, verde e flexível, típica de ervas."
+   },
+   {
+    "t": "tronco",
+    "ok": false,
+    "porque": "Tronco é lenhoso e ramifica. A palmeira não ramifica."
+   },
+   {
+    "t": "colmo",
+    "ok": false,
+    "porque": "Colmo tem gomos (bambu, cana). O caule das palmeiras, sem ramos e com folhas no ápice, é estipe."
+   }
+  ],
+  "_orig": 28
+ },
+ {
+  "tema": "Folha",
+  "enunciado": "Os espinhos dos cactos são folhas modificadas que servem principalmente para:",
+  "conceito": "Folhas podem se modificar para outras funções: espinhos (defesa), catáfilos (proteção/reserva), brácteas (atrair polinizador), gavinhas (fixação) e folhas carnívoras (capturar insetos).",
+  "licao": "folha",
+  "alternativas": [
+   {
+    "t": "atrair polinizadores",
+    "ok": false,
+    "porque": "Quem atrai polinizador são as pétalas e as brácteas coloridas."
+   },
+   {
+    "t": "defesa e economia de água",
+    "ok": true,
+    "porque": "Espinhos têm função protetora: defesa e economia hídrica."
+   },
+   {
+    "t": "armazenar amido",
+    "ok": false,
+    "porque": "Armazenar amido é função de tubérculo, rizoma e bulbo."
+   },
+   {
+    "t": "capturar insetos",
+    "ok": false,
+    "porque": "Isso é das folhas carnívoras (dioneia, drósera)."
+   },
+   {
+    "t": "armazenar água",
+    "ok": false,
+    "porque": "Quem armazena água é o caule do cacto. O espinho é folha modificada para defesa e para reduzir a perda de água."
+   }
+  ],
+  "_orig": 29
+ },
+ {
+  "tema": "Flor",
+  "enunciado": "Em uma flor, a parte onde é produzido o grão de pólen é a:",
+  "conceito": "A flor é o órgão reprodutor das angiospermas. Parte masculina: estame (filete + <b>antera</b>, que produz pólen). Parte feminina: pistilo (estigma + estilete + ovário).",
+  "licao": "flor",
+  "alternativas": [
+   {
+    "t": "antera",
+    "ok": true,
+    "porque": "A antera (no estame) produz o pólen. Estigma, estilete e ovário formam a parte feminina."
+   },
+   {
+    "t": "ovário",
+    "ok": false,
+    "porque": "O ovário guarda os óvulos e depois vira fruto."
+   },
+   {
+    "t": "sépala",
+    "ok": false,
+    "porque": "Sépala é a folhinha verde que protege o botão floral."
+   },
+   {
+    "t": "estigma",
+    "ok": false,
+    "porque": "Antera (no estame) produz o pólen. Estigma, estilete e ovário formam a parte feminina."
+   },
+   {
+    "t": "estigma",
+    "ok": false,
+    "porque": "O estigma recebe o pólen; a antera é quem o produz. Fica no estame, a parte masculina."
+   }
+  ],
+  "_orig": 30,
+  "figura": SVG_ORGAOS
+ },
+ {
+  "tema": "Flor e fruto",
+  "enunciado": "Depois da fecundação, o ovário da flor se transforma em:",
+  "conceito": "A regra que mais cai: <b>ovário → fruto</b> e <b>óvulo → semente</b>, depois da fecundação.",
+  "licao": "flor-fruto",
+  "alternativas": [
+   {
+    "t": "semente",
+    "ok": false,
+    "porque": "Ovário → fruto. Óvulo → semente. É a regra que mais cai em prova."
+   },
+   {
+    "t": "pólen",
+    "ok": false,
+    "porque": "Pólen é o gameta masculino, formado na antera."
+   },
+   {
+    "t": "fruto",
+    "ok": true,
+    "porque": "Ovário → fruto. Óvulo → semente."
+   },
+   {
+    "t": "raiz",
+    "ok": false,
+    "porque": "Raiz vem do embrião da semente, não do ovário."
+   },
+   {
+    "t": "semente",
+    "ok": false,
+    "porque": "O ovário vira fruto. Quem vira semente é o óvulo, que está dentro do ovário."
+   }
+  ],
+  "_orig": 31
+ },
+ {
+  "tema": "Fruto",
+  "enunciado": "Um fruto que não abre quando está maduro e tem várias sementes, como a laranja, é classificado como:",
+  "conceito": "Fruto é o ovário desenvolvido. Classifica-se por textura do pericarpo (seco/carnoso), abertura (deiscente/indeiscente) e nº de sementes (mono/polispérmico).",
+  "licao": "fruto",
+  "alternativas": [
+   {
+    "t": "deiscente e monospérmico",
+    "ok": false,
+    "porque": "Deiscente abre quando maduro (vagem). A laranja não abre."
+   },
+   {
+    "t": "deiscente e polispérmico",
+    "ok": false,
+    "porque": "Laranja é carnosa, <b>indeiscente</b> (não abre) e polispérmica (várias sementes)."
+   },
+   {
+    "t": "seco e monospérmico",
+    "ok": false,
+    "porque": "A laranja é carnosa (rica em água) e tem várias sementes."
+   },
+   {
+    "t": "indeiscente e polispérmico",
+    "ok": true,
+    "porque": "Indeiscente = não abre. Polispérmico = várias sementes. A laranja é carnosa, indeiscente e polispérmica."
+   },
+   {
+    "t": "deiscente e polispérmico",
+    "ok": false,
+    "porque": "Deiscente abre quando madura (vagem). A laranja não abre sozinha, então é indeiscente."
+   }
+  ],
+  "_orig": 32
+ }
+];
+
+/* ============================================================
+   AULAS — 10 assuntos
+   ============================================================ */
+const LICOES = {
+ "quatro-grupos": {
+  "titulo": "Os quatro grupos de plantas",
+  "resumo": "A matéria inteira cabe em uma linha: vasos → semente → flor e fruto. Cada grupo adiciona uma novidade, e quem tem mais novidades é mais recente na evolução.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "A ordem das novidades"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Briófitas</b> — nada de vaso, nada de semente. Só úmidas e pequenas.",
+     "<b>Pteridófitas</b> — ganharam os <b>vasos</b>. Ainda sem semente.",
+     "<b>Gimnospermas</b> — ganharam a <b>semente nua</b>, sem fruto.",
+     "<b>Angiospermas</b> — ganharam <b>flor e fruto</b> envolvendo a semente."
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Cada grupo novo carrega tudo do anterior. Angiosperma tem vaso e semente; gimnosperma tem vaso mas não tem fruto; briófita não tem nada disso."
+   },
+   {
+    "t": "h",
+    "v": "Tabela comparativa"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "Vasos: briófita NÃO · os outros três SIM",
+     "Raiz, caule e folha de verdade: briófita não (tem rizoide/cauloide/filoide)",
+     "Semente: só gimnosperma e angiosperma",
+     "Flor e fruto: só angiosperma"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Dois jeitos de dividir o mesmo mapa"
+   },
+   {
+    "t": "p",
+    "v": "A professora pode usar dois critérios, e é bom saber os dois nomes:"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Criptógamas</b> (órgão reprodutivo escondido, sem flor nem semente) = briófitas + pteridófitas",
+     "<b>Fanerógamas</b> (órgão reprodutivo aparente) = gimnospermas + angiospermas",
+     "<b>Espermatófitas</b> = plantas com semente = as duas fanerógamas",
+     "<b>Traqueófitas</b> = plantas com vaso = pteridófitas, gimnospermas e angiospermas"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "A briófita é a única avascular. Se a questão perguntar \"qual NÃO tem vasos\", a resposta é sempre ela."
+   },
+   {
+    "t": "h",
+    "v": "Os nomes gregos entregam"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>gymnos</b> = nu + <b>sperma</b> = semente → semente nua",
+     "<b>angio</b> = bolsa/vaso + <b>sperma</b> = semente → semente na bolsa (fruto)",
+     "<b>pterido</b> = samambaia",
+     "<b>brio</b> = musgo"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Exemplos para reconhecer"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "Briófitas: musgos, hepáticas, antóceros",
+     "Pteridófitas: samambaia, avenca, cavalinha, xaxim",
+     "Gimnospermas: pinheiro, araucária, cedro, cipreste, sequoia, cica, ginkgo",
+     "Angiospermas: feijão, milho, laranjeira, rosa, banana, mangueira"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "A pinha não é fruto"
+   },
+   {
+    "t": "p",
+    "v": "A pinha do pinheiro é um <b>estróbilo</b> (cone), estrutura que abriga os óvulos e depois as sementes nuas. Como gimnosperma não tem ovário, também não forma fruto."
+   }
+  ],
+  "erros": [
+   "Chamar a pinha de fruto — gimnosperma não faz fruto.",
+   "Achar que pteridófita tem semente: ela tem vaso, mas se reproduz por esporo.",
+   "Trocar fanerógama por criptógama na hora da prova."
+  ]
+ },
+ "xilema-floema": {
+  "titulo": "Xilema e floema: os canos da planta",
+  "resumo": "Dois tecidos, dois líquidos, dois sentidos. O xilema sobe água e sal; o floema distribui o açúcar produzido nas folhas.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "Por que vaso importa"
+   },
+   {
+    "t": "p",
+    "v": "Vaso condutor é o \"cano\" da planta. Ter canos foi o que permitiu as plantas crescerem em altura e viverem longe da água — a água chega às folhas sem depender de estar tudo molhado."
+   },
+   {
+    "t": "h",
+    "v": "Xilema (vasos lenhosos)"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "Leva: <b>água + sais minerais</b>",
+     "Nome do líquido: <b>seiva bruta</b>",
+     "Caminho: das raízes para as folhas, sentido único (sobe)",
+     "Células: <b>mortas</b>, com lignina (dão dureza à madeira)"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Floema (vasos liberianos)"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "Leva: <b>açúcares e compostos orgânicos</b> feitos nas folhas",
+     "Nome do líquido: <b>seiva elaborada</b>",
+     "Caminho: das folhas para o resto da planta (pode ir nos dois sentidos)",
+     "Células: <b>vivas</b>, com poros nas paredes"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Xilema = X de água que sobe (seiva bruta, como água do poço). Floema = F de fartura/comida (seiva elaborada, já \"cozinhada\" pela folha)."
+   },
+   {
+    "t": "h",
+    "v": "A tabela que resolve a prova"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "Xilema → bruta → sobe → células mortas",
+     "Floema → elaborada → distribui → células vivas"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Onde isso aparece nas questões"
+   },
+   {
+    "t": "p",
+    "v": "\"Qual tecido leva açúcar?\" → floema. \"Qual leva água e sal?\" → xilema. \"Qual tem célula morta?\" → xilema. É sempre essa dupla de perguntas."
+   }
+  ],
+  "erros": [
+   "Trocar bruta por elaborada.",
+   "Achar que o floema só desce: ele distribui para toda a planta, inclusive para cima.",
+   "Dizer que o xilema tem células vivas — ele é formado por células mortas."
+  ]
+ },
+ "ciclos-vida": {
+  "titulo": "Ciclos de vida: gametófito e esporófito",
+  "resumo": "Toda planta tem duas fases alternadas. Uma faz gameta (n), a outra faz esporo (2n). Saber qual domina em cada grupo é o que mais cai.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "As duas fases"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Gametófito (n)</b> — metade dos cromossomos. Produz <b>gametas</b> por mitose.",
+     "<b>Esporófito (2n)</b> — completo. Produz <b>esporos</b> por meiose."
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Gameta → gametófito (n). Esporo → esporófito (2n). A meiose corta pela metade (2n → n); a fecundação junta de novo (n + n = 2n)."
+   },
+   {
+    "t": "h",
+    "v": "O ciclo, em sequência"
+   },
+   {
+    "t": "p",
+    "v": "Esporófito (2n) faz meiose e solta esporos (n). O esporo germina e vira gametófito (n). O gametófito faz gametas por mitose. Os gametas se encontram na fecundação e formam o zigoto (2n), que cresce e vira esporófito. E recomeça."
+   },
+   {
+    "t": "h",
+    "v": "Quem domina em cada grupo (cai muito)"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Briófitas</b>: o <b>gametófito (n)</b> é a plantinha verde que você vê. O esporófito é a hastezinha temporária com cápsula.",
+     "<b>Vasculares</b> (samambaia, pinheiro, flores): o <b>esporófito (2n)</b> é a planta que você vê. O gametófito é pequeno e passageiro."
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Briófita = gametófito domina. Traqueófita = esporófito domina. Na evolução, o esporófito foi ganhando espaço."
+   },
+   {
+    "t": "h",
+    "v": "A dependência da água"
+   },
+   {
+    "t": "p",
+    "v": "Nas briófitas e pteridófitas, o gameta masculino (anterozoide) é <b>flagelado</b> e precisa nadar até a oosfera. Sem água, não há fecundação. Por isso esses grupos vivem em locais úmidos."
+   },
+   {
+    "t": "h",
+    "v": "A conquista do ambiente terrestre"
+   },
+   {
+    "t": "p",
+    "v": "Com o <b>grão de pólen</b> e a <b>semente</b>, a fecundação deixou de depender da água. O pólen é levado pelo vento ou por animais, e o embrião já sai protegido dentro da semente. Foi o que permitiu às plantas dominar a terra firme."
+   },
+   {
+    "t": "h",
+    "v": "Dupla fecundação (só nas angiospermas)"
+   },
+   {
+    "t": "p",
+    "v": "Uma célula espermática fecunda a oosfera e forma o <b>zigoto (2n)</b>. A outra se junta aos dois núcleos polares e forma o <b>endosperma (3n)</b>, que é a reserva de alimento da semente."
+   },
+   {
+    "t": "lista",
+    "v": [
+     "Zigoto = 2n (n + n)",
+     "Endosperma = 3n (n + 2n)"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "O prótalo da samambaia"
+   },
+   {
+    "t": "p",
+    "v": "O esporo da samambaia germina e forma o <b>prótalo</b>, que é o gametófito (n) — uma Platinha pequena e achatada, com anterídio (masculino) e arquegônio (feminino). Depois da fecundação, o esporófito cresce em cima dele e o prótalo desaparece."
+   }
+  ],
+  "erros": [
+   "Dizer que o esporo se forma por mitose — esporo é produto de meiose.",
+   "Trocar qual fase domina na briófita (é o gametófito).",
+   "Achar que o prótalo é o esporófito jovem: é o gametófito.",
+   "Confundir as ploidias da dupla fecundação (zigoto 2n, endosperma 3n)."
+  ]
+ },
+ "detalhes-grupos": {
+  "titulo": "Detalhes de cada grupo",
+  "resumo": "Os nomes que a professora cobra: os três filos das briófitas, os representantes das pteridófitas e o maior filo das gimnospermas.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "Briófitas — os três filos"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Bryophyta</b> — musgos",
+     "<b>Marchantiophyta</b> — hepáticas",
+     "<b>Anthocerophyta</b> — antóceros"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "As estruturas simples das briófitas"
+   },
+   {
+    "t": "p",
+    "v": "Elas não têm raiz, caule e folha de verdade. Têm versões simplificadas, que fazem o mesmo papel:"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Rizoide</b> ≈ raiz",
+     "<b>Cauloide</b> ≈ caule",
+     "<b>Filoide</b> ≈ folha"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Se a questão mostrar \"raiz\" numa briófita, está errado: o certo é rizoide. A terminação -oide já diz que é \"parecido com\"."
+   },
+   {
+    "t": "h",
+    "v": "Pteridófitas — representantes"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "Samambaias e avencas",
+     "Cavalinhas (Equisetum)",
+     "Xaxim"
+    ]
+   },
+   {
+    "t": "p",
+    "v": "São vasculares <b>sem semente</b>: têm vaso, mas se reproduzem por esporo."
+   },
+   {
+    "t": "h",
+    "v": "Gimnospermas — os quatro filos"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Coniferophyta</b> — coníferas: o maior grupo, mais de 600 espécies (pinheiros, sequoias, araucária, cedro, cipreste)",
+     "<b>Cycadophyta</b> — cicadáceas (cicas)",
+     "<b>Ginkgophyta</b> — ginkgo (uma única espécie viva)",
+     "<b>Gnetophyta</b> — Gnetum, Ephedra, Welwitschia"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Se a pergunta é \"maior grupo de gimnospermas\", a resposta é Coniferophyta. Anthophyta (ou Magnoliophyta) é o filo das angiospermas — nome diferente, grupo diferente."
+   },
+   {
+    "t": "h",
+    "v": "Angiospermas"
+   },
+   {
+    "t": "p",
+    "v": "É o grupo mais numeroso e diverso: de capim a árvore gigante. Tem flor e fruto, e a semente fica protegida dentro do fruto."
+   }
+  ],
+  "erros": [
+   "Trocar Anthophyta por Coniferophyta.",
+   "Dizer que a briófita tem raiz — é rizoide.",
+   "Esquecer que a gimnosperma tem quatro filos, não só as coníferas."
+  ]
+ },
+ "raiz": {
+  "titulo": "Raiz: zonas e tipos especiais",
+  "resumo": "Cinco zonas em ordem (Casa Muito Limpa Pede Sabão), dois formatos e seis tipos especiais. É decoreba com lógica.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "Para que serve"
+   },
+   {
+    "t": "p",
+    "v": "Fixar a planta no solo e absorver água e nutrientes. Algumas também armazenam alimento."
+   },
+   {
+    "t": "h",
+    "v": "As cinco zonas, de baixo para cima"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Coifa</b> — \"capacetinho\" que protege a ponta da raiz",
+     "<b>Meristemática</b> — células se multiplicam por mitose",
+     "<b>Lisa</b> — a raiz cresce em comprimento",
+     "<b>Pilífera</b> — tem os <b>pelos absorventes</b>, que absorvem água",
+     "<b>Suberosa</b> — saem as raízes secundárias"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Macete da ordem: <b>C</b>oifa → <b>M</b>eristemática → <b>L</b>isa → <b>P</b>ilífera → <b>S</b>uberosa. Frase: \"Casa Muito Limpa Pede Sabão\"."
+   },
+   {
+    "t": "p",
+    "v": "Se a pergunta for \"qual zona absorve água\", a resposta é sempre a <b>pilífera</b> — o nome vem de pelo."
+   },
+   {
+    "t": "h",
+    "v": "Dois formatos"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Fasciculada</b> — muitas raízes finas do mesmo tamanho, tipo cabeleira. Sem raiz principal. Ex.: milho, capim.",
+     "<b>Pivotante (axial)</b> — uma raiz principal grossa com secundárias saindo dela. Ex.: cenoura, feijão."
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Tipos especiais"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Haustórios</b> — plantas parasitas: penetram no caule do hospedeiro e roubam o que precisam",
+     "<b>Pneumatóforos</b> — crescem para fora do solo, ajudam a respirar em solo pobre em O₂ (mangue)",
+     "<b>Escoras</b> — aéreas, dão suporte a plantas altas e pesadas (milho)",
+     "<b>Estranguladoras</b> — da mata-pau: começa como epífita, as raízes engrossam e estrangulam a hospedeira",
+     "<b>Grampiformes</b> — fixam a planta em suportes (trepadeiras)",
+     "<b>Tabulares</b> — na base do tronco, muito largas, para sustentação"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Pneumatóforo = pneumo (ar) = respiração. Haustório = parasita. Escora = apoio. Cada nome entrega a função."
+   }
+  ],
+  "erros": [
+   "Trocar a ordem das zonas (a pilífera vem antes da suberosa).",
+   "Dizer que a zona lisa absorve água — ela só alonga.",
+   "Confundir fasciculada (cabeleira) com pivotante (raiz principal grossa)."
+  ]
+ },
+ "caule": {
+  "titulo": "Caule: aéreos, subterrâneos e aquático",
+  "resumo": "Marca do caule: nós e entrenós. A partir daí, cada tipo é uma variação de forma e função — e a pegadinha clássica é a batata.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "Para que serve e como reconhecer"
+   },
+   {
+    "t": "p",
+    "v": "Sustenta folhas e estruturas reprodutivas, e liga as folhas às raízes. <b>Marca registrada do caule: nós</b> (onde nascem folhas e ramos) e <b>entrenós</b> (o trecho entre dois nós)."
+   },
+   {
+    "t": "h",
+    "v": "Aéreos (acima do solo)"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Tronco</b> — lenhoso, rígido, ramificado mais no alto (mangueira, sequoia)",
+     "<b>Estipe</b> — sem ramos, folhas só no ápice (<b>palmeiras</b>)",
+     "<b>Haste</b> — macio, flexível, verde, faz fotossíntese (ervas)",
+     "<b>Colmo</b> — tem gomos, nós e entrenós em anel (bambu, cana-de-açúcar)",
+     "<b>Trepador</b> — usa suporte para subir (trepadeiras)",
+     "<b>Rastejante</b> — cobre o chão; o <b>estolho</b> cria raízes nos nós (morangueiro)"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Subterrâneos (abaixo do solo)"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Rizoma</b> — grosso, horizontal, nós bem marcados, com reserva (bananeira, gengibre)",
+     "<b>Bulbo</b> — \"prato\" achatado envolvido por catáfilos; sobrevive a seca e frio (cebola, alho)",
+     "<b>Tubérculo</b> — muito inchado, cheio de amido, redondo, <b>com gemas</b> (batata-inglesa)"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Aquático"
+   },
+   {
+    "t": "p",
+    "v": "Vive na água a vida toda e não precisa ser rígido (elódea)."
+   },
+   {
+    "t": "destaque",
+    "v": "A pegadinha clássica: <b>batata-inglesa é CAULE</b> (tubérculo, tem gemas — por isso dá para plantar um pedaço). <b>Batata-doce é RAIZ</b> tuberosa. Nome parecido, órgão diferente."
+   },
+   {
+    "t": "h",
+    "v": "Como diferenciar rápido"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "Tem gema/brotinho? → caule",
+     "Tem nó? → caule",
+     "Estipe → palmeira · Colmo → bambu/cana · Haste → erva"
+    ]
+   }
+  ],
+  "erros": [
+   "Chamar a batata-inglesa de raiz — é caule (tubérculo).",
+   "Confundir estipe (palmeira) com colmo (bambu).",
+   "Achar que rizoma é raiz: é caule subterrâneo."
+  ]
+ },
+ "folha": {
+  "titulo": "Folha e suas modificações",
+  "resumo": "A folha pode virar espinho, catáfilo, bráctea, gavinha ou armadilha. Mesma origem, funções totalmente diferentes.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "Partes da folha"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Lâmina foliar</b> — a parte larga e verde",
+     "<b>Pecíolo</b> — o \"cabinho\"",
+     "<b>Nervuras</b> — central e secundárias; são os vasos da folha",
+     "<b>Estípulas</b> — pequenos apêndices na base",
+     "<b>Nó</b> — onde a folha se prende ao caule"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Simples ou composta"
+   },
+   {
+    "t": "p",
+    "v": "<b>Simples</b>: uma lâmina só, mesmo que recortada. <b>Composta</b>: a lâmina é dividida em vários folíolos."
+   },
+   {
+    "t": "h",
+    "v": "Modificações — a parte que cai"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Espinhos</b> — defesa e economia de água (cactos)",
+     "<b>Catáfilos (escamas)</b> — protegem e podem guardar reserva; ficam em rizomas e bulbos (cebola)",
+     "<b>Brácteas</b> — folhas coloridas que protegem a flor e atraem polinizadores (antúrio, primavera/bougainville)",
+     "<b>Gavinhas</b> — fixação, a planta se agarra (maracujá, videira)",
+     "<b>Folhas carnívoras</b> — capturam insetos (dioneia, drósera)"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "O espinho do cacto é <b>folha modificada</b>. Quem armazena água é o caule. Separar os dois é o que a prova cobra."
+   },
+   {
+    "t": "h",
+    "v": "Como não errar"
+   },
+   {
+    "t": "p",
+    "v": "Olhe a função e pergunte onde ela está. Se a estrutura está na base do bulbo/rizoma, é catáfilo. Se é colorida e fica em volta da flor, é bráctea. Se agarra, é gavinha. Se machuca, é espinho."
+   }
+  ],
+  "erros": [
+   "Dizer que o espinho do cacto armazena água.",
+   "Trocar bráctea (colorida, atrai) por pétala (é da flor, não é folha modificada).",
+   "Achar que catáfilo é raiz — é folha modificada em bulbo/rizoma."
+  ]
+ },
+ "flor": {
+  "titulo": "Flor: parte masculina e feminina",
+  "resumo": "Estame é macho e produz pólen na antera. Pistilo é fêmea e recebe o pólen no estigma. Depois da fecundação, ovário vira fruto.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "A flor é o órgão reprodutor das angiospermas"
+   },
+   {
+    "t": "p",
+    "v": "Cada peça tem uma função. As peças verdes e coloridas protegem e atraem; as férteis produzem e recebem o pólen."
+   },
+   {
+    "t": "h",
+    "v": "As peças"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Pedúnculo</b> — o cabinho que segura a flor",
+     "<b>Receptáculo</b> — ponta do pedúnculo onde as peças se prendem",
+     "<b>Sépalas</b> — folhinhas verdes que protegem o botão",
+     "<b>Pétalas</b> — coloridas, atraem polinizadores",
+     "<b>Estame</b> (masculino) — filete + <b>antera</b>, onde nasce o pólen",
+     "<b>Pistilo/carpelo</b> (feminino) — estigma (topo pegajoso que recebe o pólen) + estilete (tubinho) + <b>ovário</b> (guarda os óvulos)"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Antera = pólen = macho. Estigma → estilete → ovário = fêmea. Guarde a primeira palavra de cada lado."
+   },
+   {
+    "t": "h",
+    "v": "Flor completa, masculina e feminina"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Completa</b>: tem as duas partes na mesma flor",
+     "<b>Masculina</b>: só estames",
+     "<b>Feminina</b>: só pistilo"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Depois da fecundação"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Ovário → fruto</b>",
+     "<b>Óvulo → semente</b>"
+    ]
+   },
+   {
+    "t": "p",
+    "v": "Essa é provavelmente a regra mais cobrada de toda a botânica. O resto da flor (pétalas, sépalas, estames) murcha e cai."
+   }
+  ],
+  "erros": [
+   "Trocar antera por estigma (antera produz, estigma recebe).",
+   "Dizer que o óvulo vira fruto — quem vira fruto é o ovário.",
+   "Achar que toda flor é completa: existe flor só masculina e só feminina."
+  ]
+ },
+ "flor-fruto": {
+  "titulo": "Do ovário ao fruto",
+  "resumo": "Fecundação → o ovário cresce e vira fruto; o óvulo vira semente. O fruto existe para proteger e dispersar a semente.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "A transformação"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Ovário → fruto</b>",
+     "<b>Óvulo → semente</b>"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Se a prova perguntar \"o que o ovário se torna\", a resposta é fruto. Se perguntar \"o que o óvulo se torna\", é semente. Trocar as duas é o erro mais comum."
+   },
+   {
+    "t": "h",
+    "v": "Por que o fruto existe"
+   },
+   {
+    "t": "p",
+    "v": "Proteger a semente em desenvolvimento e ajudar na dispersão: alguns frutos são comidos por animais (que espalham as sementes), outros voam com o vento, outros flutuam na água."
+   },
+   {
+    "t": "h",
+    "v": "O que acontece com o resto da flor"
+   },
+   {
+    "t": "p",
+    "v": "Pétalas, sépalas e estames murcham e caem depois da fecundação. O que sobra e cresce é o ovário. É por isso que às vezes a flor murcha e \"aparece\" um fruto no mesmo lugar."
+   },
+   {
+    "t": "h",
+    "v": "Estrutura do fruto"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Pericarpo</b> — a parte que envolve a semente (vem da parede do ovário)",
+     "<b>Semente</b> — o óvulo desenvolvido, com o embrião dentro"
+    ]
+   }
+  ],
+  "erros": [
+   "Inverter ovário/fruto com óvulo/semente.",
+   "Achar que o fruto se forma antes da fecundação — sem fecundação o ovário não se desenvolve.",
+   "Dizer que a flor inteira vira fruto: só o ovário."
+  ]
+ },
+ "fruto": {
+  "titulo": "Classificação dos frutos",
+  "resumo": "Três critérios independentes: textura, se abre ou não, e número de sementes. Cada fruto recebe uma combinação dos três.",
+  "blocos": [
+   {
+    "t": "h",
+    "v": "O que é fruto"
+   },
+   {
+    "t": "p",
+    "v": "Fruto é o <b>ovário desenvolvido</b>. A parte que envolve a semente chama-se <b>pericarpo</b>."
+   },
+   {
+    "t": "h",
+    "v": "Critério 1 — textura do pericarpo"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Seco</b> — pobre em água, sem reserva nutritiva no pericarpo (a reserva fica na semente). Ex.: ervilha, castanha",
+     "<b>Carnoso</b> — rico em água e nutrientes, geralmente no mesocarpo. Ex.: maçã, laranja, limão"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Critério 2 — abre ou não"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Deiscente</b> — abre quando maduro e solta as sementes. Ex.: ervilha (vagem)",
+     "<b>Indeiscente</b> — não abre sozinho. Ex.: laranja, maçã, pêssego"
+    ]
+   },
+   {
+    "t": "h",
+    "v": "Critério 3 — número de sementes"
+   },
+   {
+    "t": "lista",
+    "v": [
+     "<b>Monospérmico</b> — uma semente. Ex.: pêssego, abacate, manga",
+     "<b>Polispérmico</b> — várias sementes. Ex.: laranja, melão, mamão"
+    ]
+   },
+   {
+    "t": "destaque",
+    "v": "Mono = um, poli = vários. Deiscente = \"deixa sair\" (abre). Indeiscente = não abre. Os três critérios são independentes — um fruto tem os três ao mesmo tempo."
+   },
+   {
+    "t": "h",
+    "v": "Exemplo completo"
+   },
+   {
+    "t": "p",
+    "v": "A laranja é: <b>carnosa</b> (textura) + <b>indeiscente</b> (não abre) + <b>polispérmica</b> (várias sementes)."
+   },
+   {
+    "t": "p",
+    "v": "A vagem de ervilha é: <b>seca</b> + <b>deiscente</b> + <b>polispérmica</b>."
+   }
+  ],
+  "erros": [
+   "Achar que fruto seco é fruto que não tem semente.",
+   "Trocar deiscente por indeiscente (a laranja não abre).",
+   "Confundir monospérmico com indeiscente: são critérios diferentes."
+  ]
+ }
+};
+
+const LICAO_POR_QUESTAO = QUESTIONS.map(q => q.licao);
+
+const stage   = document.getElementById('stage');
+const fill    = document.getElementById('fill');
+const count   = document.getElementById('count');
+const timerEl = document.getElementById('timer');
+const logEl   = document.getElementById('log');
+const LETTERS = ['a','b','c','d','e'];
+
+const LIMITE_SEG = 50 * 60;      // 50 minutos de prova
+const K_LOG    = 'simulado_botanica_log_v1';     // historico de eventos
+const K_SESSAO = 'simulado_botanica_sessao_v1';  // marcador de tentativa em andamento
+
+let QUIZ = [];        // versao com alternativas embaralhadas (a que aparece na tela)
+let idx = 0;
+let answers = [];
+let estado = 'intro'; // intro | quiz | done
+let fimEm = 0, inicioEm = 0, tickId = null;
+let pendente = null;  // alternativa selecionada aguardando confirmacao (-1 = pular)
+let tentativa = 0;
+
+/* ---------------- armazenamento seguro ---------------- */
+const mem = {};
+function lsGet(k, def){
+  try { const v = localStorage.getItem(k); return v === null ? def : JSON.parse(v); }
+  catch(e){ return k in mem ? mem[k] : def; }
+}
+function lsSet(k, v){
+  try { localStorage.setItem(k, JSON.stringify(v)); }
+  catch(e){ mem[k] = v; }
+}
+function lsDel(k){
+  try { localStorage.removeItem(k); } catch(e){ delete mem[k]; }
+}
+
+/* ---------------- registro de tentativas ---------------- */
+function logGet(){ const l = lsGet(K_LOG, []); return Array.isArray(l) ? l : []; }
+function logAdd(tipo, nota, extra){
+  const l = logGet();
+  l.push(Object.assign({t: Date.now(), tipo, nota: nota || '', tentativa}, extra || {}));
+  while (l.length > 60) l.shift();
+  lsSet(K_LOG, l);
+  renderLog();
+}
+
+function horaCurta(ts){
+  const d = new Date(ts);
+  return String(d.getHours()).padStart(2,'0') + ':' + String(d.getMinutes()).padStart(2,'0');
+}
+function quando(ts){
+  const diff = Math.round((Date.now() - ts) / 60000);
+  if (diff < 1) return 'agora';
+  if (diff < 60) return 'há ' + diff + ' min';
+  const d = Math.round(diff / 60);
+  if (d < 24) return 'há ' + d + ' h';
+  return 'há ' + Math.round(d / 24) + ' d';
+}
+
+function resumoLog(){
+  const l = logGet();
+  const inicios   = l.filter(e => e.tipo === 'iniciou').length;
+  const reinicios = l.filter(e => e.tipo === 'reiniciou').length;
+  return {
+    inicios,
+    tentativas:  inicios + reinicios,          // toda vez que a prova recomeça, conta
+    reinicios,
+    interrupcoes:l.filter(e => e.tipo === 'interrompeu').length,
+    conclusoes:  l.filter(e => e.tipo === 'concluiu' || e.tipo === 'tempo').length,
+    ultimo:      l.length ? l[l.length - 1].t : 0
+  };
+}
+
+const ROTULO = {
+  iniciou:    '▶ Iniciou',
+  reiniciou:  '↻ Reiniciou',
+  interrompeu:'⏸ Saiu',
+  concluiu:   '✓ Concluiu',
+  tempo:      '⏱ Tempo esgotado'
+};
+
+function renderLog(){
+  const r = resumoLog();
+  const badges = document.getElementById('logBadges');
+  const note   = document.getElementById('logNote');
+  const list   = document.getElementById('logList');
+  const foot   = document.getElementById('logFoot');
+  if (!badges) return;
+
+  const b = [];
+  b.push(`<span class="badge ${r.tentativas?'':'zero'}">Tentativas: ${r.tentativas}</span>`);
+  b.push(`<span class="badge ${r.reinicios?'warn':'zero'}">Reinícios: ${r.reinicios}</span>`);
+  b.push(`<span class="badge ${r.interrupcoes?'bad':'zero'}">Saídas no meio: ${r.interrupcoes}</span>`);
+  b.push(`<span class="badge ${r.conclusoes?'good':'zero'}">Concluídas: ${r.conclusoes}</span>`);
+  if (r.ultimo) b.push(`<span class="badge zero">última: ${quando(r.ultimo)}</span>`);
+  badges.innerHTML = b.join('');
+
+  const total = r.reinicios + r.interrupcoes;
+  if (total > 0){
+    note.hidden = false;
+    note.innerHTML = `Este simulado já foi <b>reiniciado ${r.reinicios}×</b> e <b>interrompido ${r.interrupcoes}×</b> ` +
+      `(sair ou recarregar a página no meio conta como interrupção). O registro fica salvo neste navegador.`;
+  } else {
+    note.hidden = true;
+  }
+
+  const l = logGet().slice().reverse();
+  list.innerHTML = l.map(e => `
+    <li>
+      <span class="log-time">${horaCurta(e.t)}</span>
+      <span class="log-tipo ${e.tipo}">${ROTULO[e.tipo] || e.tipo}</span>
+      <span class="log-nota">${e.nota || ''}</span>
+    </li>`).join('');
+  foot.hidden = !l.length;
+}
+
+/* ---------------- sessao em andamento ---------------- */
+function marcarSessao(){
+  lsSet(K_SESSAO, {
+    inicio: inicioEm, tentativa,
+    idx: idx + 1,
+    respondidas: answers.length,
+    total: QUESTIONS.length,
+    naTela: Date.now()
+  });
+}
+function limparSessao(){ lsDel(K_SESSAO); }
+
+// ao abrir a pagina: se havia tentativa em andamento, isso conta como interrupcao
+function registrarSaidaAnterior(){
+  const s = lsGet(K_SESSAO, null);
+  if (!s) return false;
+  tentativa = s.tentativa || 1;
+  logAdd('interrompeu',
+    `tentativa ${s.tentativa} parada na questão ${s.idx}/${s.total} (${s.respondidas} respondida(s))`,
+    {t: s.naTela || s.inicio});
+  limparSessao();
+  return true;
+}
+
+/* ---------------- embaralhamento equilibrado ---------------- */
+function shuffleArr(a){
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--){
+    const k = Math.floor(Math.random() * (i + 1));
+    [r[i], r[k]] = [r[k], r[i]];
+  }
+  return r;
+}
+
+function montarQuiz(){
+  const n = QUESTIONS.length;
+  const cota = Math.floor(n / 5);
+  const sobra = n % 5;
+  const letras = shuffleArr([0,1,2,3,4]).slice(0, sobra);
+  let pool = [];
+  for (let l = 0; l < 5; l++){
+    const qtd = cota + (letras.includes(l) ? 1 : 0);
+    for (let k = 0; k < qtd; k++) pool.push(l);
+  }
+  pool = shuffleArr(pool);
+
+  return QUESTIONS.map((q, qi) => {
+    const correta = q.alternativas.findIndex(a => a.ok);
+    const erradas = shuffleArr(q.alternativas.map((_, k) => k).filter(k => k !== correta));
+    const alvo = pool[qi];
+    const ordem = [];
+    let pe = 0;
+    for (let pos = 0; pos < q.alternativas.length; pos++){
+      ordem.push(pos === alvo ? correta : erradas[pe++]);
+    }
+    return {
+      tema: q.tema,
+      enunciado: q.enunciado,
+      figura: q.figura,                     // diagrama SVG (sobrevive ao sorteio)
+      estrutura: q.estrutura,
+      conceito: q.conceito,
+      licao: q.licao,                       // aula do assunto (sobrevive ao sorteio)
+      alternativas: ordem.map(k => q.alternativas[k])
+    };
+  });
+}
+
+/* ---------------- cronometro ---------------- */
+function fmt(seg){
+  seg = Math.max(0, Math.round(seg));
+  return String(Math.floor(seg / 60)).padStart(2,'0') + ':' + String(seg % 60).padStart(2,'0');
+}
+function restanteSeg(){ return (fimEm - Date.now()) / 1000; }
+
+function tick(){
+  if (estado !== 'quiz') return;
+  const seg = restanteSeg();
+  timerEl.textContent = fmt(seg);
+  timerEl.classList.toggle('warn',   seg <= 600 && seg > 300);
+  timerEl.classList.toggle('danger', seg <= 300);
+  if (seg <= 0) encerrarPorTempo();
+}
+function iniciarTimer(){
+  inicioEm = Date.now();
+  fimEm = inicioEm + LIMITE_SEG * 1000;
+  timerEl.classList.remove('hidden','warn','danger');
+  timerEl.textContent = fmt(LIMITE_SEG);
+  clearInterval(tickId);
+  tickId = setInterval(tick, 250);
+  tick();
+}
+function pararTimer(){ clearInterval(tickId); tickId = null; timerEl.classList.add('hidden'); }
+
+/* ---------------- telas ---------------- */
+function progress(){
+  const pct = (idx / QUESTIONS.length) * 100;
+  fill.style.width = pct + '%';
+  count.innerHTML = '<b>' + Math.min(idx + 1, QUESTIONS.length) + '</b> / ' + QUESTIONS.length;
+}
+
+function telaInicial(){
+  estado = 'intro';
+  pararTimer();
+  pendente = null;
+  fill.style.width = '0%';
+  count.innerHTML = '<b>' + QUESTIONS.length + '</b> questões';
+  renderLog();
+
+  const r = resumoLog();
+  const aviso = (r.reinicios + r.interrupcoes) > 0
+    ? `<p class="log-note" style="margin-top:16px">Atenção: este simulado já foi reiniciado <b>${r.reinicios}×</b> e interrompido <b>${r.interrupcoes}×</b>. Esse histórico aparece no topo durante toda a prova.</p>`
+    : '';
+
+  stage.innerHTML = `
+    <section class="card">
+      <span class="chip">Antes de começar</span>
+      <p class="q">Simulado de Botânica — <strong>${QUESTIONS.length} questões</strong>, <strong>50 minutos</strong>.</p>
+      <ul class="start-rules">
+        <li>O cronômetro começa em <b>Iniciar simulado</b> e não pausa.</li>
+        <li>Cada resposta pede <b>confirmação</b> antes de revelar o gabarito.</li>
+        <li>Se você sair ou recarregar no meio, isso é <b>registrado</b> no painel de tentativas lá em cima.</li>
+        <li>As alternativas são sorteadas a cada tentativa — a letra correta muda de lugar.</li>
+        <li>Ao chegar em 00:00, o simulado é encerrado e corrigido com o que você já respondeu.</li>
+      </ul>
+      ${aviso}
+      <div class="actions">
+        <span class="hint">Enter também inicia</span>
+        <button class="btn ghost" id="semTimer" type="button">Treinar sem tempo</button>
+        <button class="btn" id="iniciar" type="button">Iniciar simulado</button>
+      </div>
+    </section>`;
+  document.getElementById('iniciar').addEventListener('click', () => comecar(true));
+  document.getElementById('semTimer').addEventListener('click', () => comecar(false));
+}
+
+function comecar(comTempo, motivo){
+  QUIZ = montarQuiz();
+  idx = 0;
+  answers = [];
+  pendente = null;
+  estado = 'quiz';
+  tentativa = resumoLog().tentativas + 1;
+  if (comTempo) iniciarTimer(); else { inicioEm = Date.now(); pararTimer(); }
+
+  logAdd(motivo === 'reiniciou' ? 'reiniciou' : 'iniciou',
+         motivo === 'reiniciou'
+           ? `tentativa ${tentativa} — recomeçou do zero${comTempo ? ' com 50 min' : ' sem tempo'}`
+           : `tentativa ${tentativa} — ${comTempo ? '50 minutos' : 'sem tempo'}`);
+  marcarSessao();
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const q = QUIZ[idx];
+  progress();
+  pendente = null;
+
+  const opts = q.alternativas.map((a, i) => `
+      <button class="opt" data-i="${i}" type="button">
+        <span class="key">${LETTERS[i]}</span>
+        <span class="txt">${a.t}</span>
+      </button>`).join('');
+
+  stage.innerHTML = `
+    <section class="card">
+      <span class="chip">${q.tema}</span>
+      <p class="q">${q.enunciado}</p>
+      ${q.figura ? q.figura : ''}
+      ${q.estrutura ? `<div class="formula"><span class="lbl">estrutura</span>${q.estrutura}</div>` : ''}
+      <div class="opts" id="opts">${opts}</div>
+      <div id="confirmBox"></div>
+      <div id="fb"></div>
+      <div class="actions">
+        <span class="hint" id="hint">Escolha uma alternativa (teclas 1–5)</span>
+        <button class="btn ghost" id="restart" type="button">Reiniciar</button>
+        <button class="btn ghost" id="skip" type="button">Pular</button>
+        <button class="btn" id="next" type="button" disabled>Próxima</button>
+      </div>
+    </section>`;
+
+  document.getElementById('opts').addEventListener('click', e => {
+    const b = e.target.closest('.opt');
+    if (b && !b.classList.contains('locked')) selecionar(parseInt(b.dataset.i, 10));
+  });
+  document.getElementById('next').addEventListener('click', next);
+  document.getElementById('skip').addEventListener('click', pedirPular);
+  document.getElementById('restart').addEventListener('click', pedirReinicio);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---- etapa 1: selecionar (nao revela nada) ---- */
+function selecionar(i){
+  const q = QUIZ[idx];
+  const fb = document.getElementById('fb');
+  if (estado !== 'quiz' || (fb && fb.dataset.done)) return;
+  if (i < 0 || i >= q.alternativas.length) return;
+
+  pendente = i;
+
+  document.querySelectorAll('.opt').forEach(el => {
+    el.classList.toggle('sel', parseInt(el.dataset.i, 10) === i);
+  });
+
+  const box = document.getElementById('confirmBox');
+  box.innerHTML = `
+    <div class="confirm">
+      <p class="confirm-q">
+        Confirmar esta resposta?
+        <span class="pick"><b>${LETTERS[i]})</b> ${q.alternativas[i].t}</span>
+      </p>
+      <div class="confirm-btns">
+        <button class="btn ghost" id="trocar" type="button">Trocar</button>
+        <button class="btn" id="confirmar" type="button">Confirmar resposta</button>
+      </div>
+    </div>`;
+  document.getElementById('confirmar').addEventListener('click', confirmar);
+  document.getElementById('trocar').addEventListener('click', limparSelecao);
+  document.getElementById('hint').textContent = 'Confirme para ver o gabarito (Enter confirma)';
+  document.getElementById('confirmar').focus({preventScroll:true});
+}
+
+function limparSelecao(){
+  pendente = null;
+  document.querySelectorAll('.opt').forEach(el => el.classList.remove('sel'));
+  const box = document.getElementById('confirmBox');
+  if (box) box.innerHTML = '';
+  const hint = document.getElementById('hint');
+  if (hint) hint.textContent = 'Escolha uma alternativa (teclas 1–5)';
+}
+
+function confirmar(){
+  if (pendente === null) return;
+  const escolha = pendente;
+  document.getElementById('confirmBox').innerHTML = '';
+  revelar(escolha);
+}
+
+/* ---- pular tambem passa por confirmacao ---- */
+function pedirPular(){
+  const fb = document.getElementById('fb');
+  if (estado !== 'quiz' || (fb && fb.dataset.done)) return;
+  pendente = -1;
+  document.querySelectorAll('.opt').forEach(el => el.classList.remove('sel'));
+  const box = document.getElementById('confirmBox');
+  box.innerHTML = `
+    <div class="confirm">
+      <p class="confirm-q">
+        Pular esta questão? Ela entra como <b>não respondida</b> no resultado.
+      </p>
+      <div class="confirm-btns">
+        <button class="btn ghost" id="trocar" type="button">Voltar</button>
+        <button class="btn danger-btn" id="confirmar" type="button">Pular mesmo assim</button>
+      </div>
+    </div>`;
+  document.getElementById('confirmar').addEventListener('click', confirmar);
+  document.getElementById('trocar').addEventListener('click', limparSelecao);
+  document.getElementById('confirmar').focus({preventScroll:true});
+}
+
+/* ---- reinicio com confirmacao e registro ---- */
+function pedirReinicio(){
+  if (estado !== 'quiz') return;
+  boxReinicio();
+}
+
+function boxReinicio(){
+  const box = document.getElementById('confirmBox');
+  const resp = answers.length;
+  box.innerHTML = `
+    <div class="confirm" style="border-color:var(--no-line);background:var(--no-soft)">
+      <p class="confirm-q">
+        Reiniciar o simulado? Você está na <b>questão ${idx + 1} de ${QUESTIONS.length}</b> com
+        <b>${resp} resposta(s)</b> registrada(s). Tudo é apagado e o reinício fica marcado no
+        painel de registro do topo.
+      </p>
+      <div class="confirm-btns">
+        <button class="btn ghost" id="trocar" type="button">Cancelar</button>
+        <button class="btn danger-btn" id="confirmar" type="button">Sim, reiniciar</button>
+      </div>
+    </div>`;
+  document.getElementById('confirmar').addEventListener('click', () => {
+    comecar(true, 'reiniciou');
+  });
+  document.getElementById('trocar').addEventListener('click', () => {
+    if (pendente === null) limparSelecao(); else selecionar(pendente);
+  });
+  document.getElementById('confirmar').focus({preventScroll:true});
+}
+
+/* ---- etapa 2: revelar gabarito ---- */
+function revelar(chosen){
+  if (estado !== 'quiz') return;
+  const q = QUIZ[idx];
+  const fb = document.getElementById('fb');
+  if (fb.dataset.done) return;
+  fb.dataset.done = '1';
+
+  const ok = chosen >= 0 && q.alternativas[chosen].ok;
+  answers.push({i: idx, chosen, ok, tema: q.tema});
+  pendente = null;
+  marcarSessao();
+
+  document.querySelectorAll('.opt').forEach(el => {
+    const i = parseInt(el.dataset.i, 10);
+    const a = q.alternativas[i];
+    el.classList.remove('sel');
+    el.classList.add('locked');
+    if (a.ok){
+      el.classList.add('correct');
+      el.insertAdjacentHTML('beforeend', '<span class="mark">✓</span>');
+    } else if (i === chosen){
+      el.classList.add('wrong');
+      el.insertAdjacentHTML('beforeend', '<span class="mark">✕</span>');
+    } else {
+      el.classList.add('dim');
+    }
+  });
+
+  const why = q.alternativas.map((a, i) => {
+    const cls = a.ok ? 'good' : 'bad';
+    const picked = i === chosen ? ' picked' : '';
+    return `<li class="${cls}${picked}"><b class="lbl">${LETTERS[i]}</b>${a.porque}</li>`;
+  }).join('');
+
+  const verdict = chosen === -1
+    ? `<div class="verdict no">⏭ Você pulou esta questão</div>`
+    : ok
+      ? `<div class="verdict ok">✓ Resposta correta</div>`
+      : `<div class="verdict no">✕ Resposta incorreta — a correta é a letra ${LETTERS[q.alternativas.findIndex(a => a.ok)]}</div>`;
+
+  const lic = LICOES[q.licao];
+  const btnAula = lic ? `
+    <button class="lesson-btn" id="abrirAula" type="button">
+      <span class="ico">📘</span>
+      <span class="lbl">Aprender o assunto do zero
+        <small>${lic.titulo}</small></span>
+      <span class="arrow">→</span>
+    </button>` : '';
+
+  fb.innerHTML = `
+    <div class="fb">
+      ${verdict}
+      <p class="concept">${q.conceito}</p>
+      <ul class="why">${why}</ul>
+      ${btnAula}
+    </div>`;
+
+  const abrir = document.getElementById('abrirAula');
+  if (abrir) abrir.addEventListener('click', () => abrirLicao(q.licao));
+
+  const nextBtn = document.getElementById('next');
+  nextBtn.disabled = false;
+  nextBtn.textContent = (idx === QUESTIONS.length - 1) ? 'Ver resultado' : 'Próxima';
+  document.getElementById('skip').style.display = 'none';
+  document.getElementById('hint').textContent = ok ? 'Boa. Enter para continuar.' : 'Leia as explicações e siga com Enter.';
+  nextBtn.focus({preventScroll:true});
+}
+
+function next(){
+  const fb = document.getElementById('fb');
+  if (!fb || !fb.dataset.done) return;
+  idx++;
+  if (idx >= QUESTIONS.length) return results();
+  marcarSessao();
+  renderQuestion();
+}
+
+function encerrarPorTempo(){
+  pararTimer();
+  results(true);
+}
+
+function results(porTempo){
+  estado = 'done';
+  pararTimer();
+  limparSessao();
+
+  const segUsados = porTempo ? LIMITE_SEG : Math.min(LIMITE_SEG, Math.round((Date.now() - inicioEm) / 1000));
+  fill.style.width = '100%';
+
+  const right = answers.filter(a => a.ok).length;
+  const total = QUESTIONS.length;
+  const pct = Math.round((right / total) * 100);
+  const semResposta = total - answers.length;
+
+  logAdd(porTempo ? 'tempo' : 'concluiu',
+         `tentativa ${tentativa} — ${right}/${total} (${pct}%) em ${fmt(segUsados)}`);
+
+  const byTheme = {};
+  answers.forEach(a => {
+    byTheme[a.tema] = byTheme[a.tema] || {t:0, ok:0};
+    byTheme[a.tema].t++;
+    if (a.ok) byTheme[a.tema].ok++;
+  });
+
+  const rows = Object.entries(byTheme).map(([tema, v]) => {
+    const p = Math.round((v.ok / v.t) * 100);
+    const cls = p >= 80 ? 'ok' : p >= 50 ? 'mid' : 'no';
+    return `<tr><td>${tema}</td><td class="num">${v.ok}/${v.t}</td>
+            <td class="num"><span class="pill ${cls}">${p}%</span></td></tr>`;
+  }).join('');
+
+  const errors = answers.filter(a => !a.ok);
+  const rev = errors.length
+    ? `<ul class="rev-list">${errors.map(a => {
+        const q = QUIZ[a.i];
+        const corr = q.alternativas.find(x => x.ok);
+        return `<li><b>Questão ${a.i + 1} · ${q.tema}</b>
+                  ${a.chosen === -1 ? 'Você pulou. ' : ''}Correta (${LETTERS[q.alternativas.findIndex(x => x.ok)]}): ${corr.t}</li>`;
+      }).join('')}</ul>`
+    : `<p class="sub" style="margin-top:18px">Nenhum erro. Nesse nível, vale revisar só os detalhes de nomenclatura de radicais (sec-, terc-, iso-) antes da prova.</p>`;
+
+  const msg = pct >= 85 ? 'Muito bom — você domina a classificação de cadeias.'
+            : pct >= 65 ? 'Bom caminho. Os erros estão concentrados em poucos temas: releia a tabela.'
+            : pct >= 45 ? 'Base em construção. Refaça as questões erradas com a explicação ao lado.'
+            : 'Vale voltar à teoria: tetravalência, classificação de carbonos e os três critérios de cadeia.';
+
+  const rr = resumoLog();
+  count.innerHTML = '<b>' + total + '</b> / ' + total;
+
+  stage.innerHTML = `
+    <section class="card">
+      <span class="chip">Resultado</span>
+      ${porTempo ? `<div class="banner">⏱ Tempo esgotado — o simulado foi encerrado e corrigido com as respostas já registradas.</div>` : ''}
+      <div class="score">
+        <div class="ring" style="--p:${pct}"><span>${pct}%</span></div>
+        <div class="score-txt">
+          <h2>${right} de ${total} corretas</h2>
+          <p>${msg}</p>
+        </div>
+      </div>
+      <div class="meta-row">
+        <span>Tentativa: <b>${tentativa}ª</b></span>
+        <span>Tempo: <b>${fmt(segUsados)}</b>${porTempo ? ' (limite)' : ' de 50:00'}</span>
+        <span>Em branco: <b>${semResposta}</b></span>
+        <span>Média por questão: <b>${answers.length >= 3 ? fmt(segUsados / answers.length) : '—'}</b></span>
+        <span>Reinícios + saídas: <b>${rr.reinicios + rr.interrupcoes}</b></span>
+      </div>
+      <table>
+        <thead><tr><th>Tema</th><th class="num">Acertos</th><th class="num">%</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <h3 style="font-size:15px;margin:22px 0 0">Revisar antes da prova</h3>
+      ${rev}
+      <div class="actions">
+        <span class="hint">Cada tentativa sorteia novas posições.</span>
+        <button class="btn ghost" id="inicio" type="button">Tela inicial</button>
+        <button class="btn" id="again" type="button">Refazer o simulado</button>
+      </div>
+    </section>`;
+
+  document.getElementById('again').addEventListener('click', () => comecar(true, 'reiniciou'));
+  document.getElementById('inicio').addEventListener('click', telaInicial);
+  renderLog();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---------------- painel de registro ---------------- */
+const btnProva = document.getElementById('irParaProva');
+  if (btnProva) btnProva.addEventListener('click', () => { window.location.href = 'prova.html'; });
+
+document.getElementById('logToggle').addEventListener('click', () => {
+  const list = document.getElementById('logList');
+  const foot = document.getElementById('logFoot');
+  const abrir = list.hidden;
+  list.hidden = !abrir;
+  foot.hidden = !abrir || !logGet().length;
+  document.getElementById('logToggle').textContent = abrir ? 'Ocultar' : 'Histórico';
+});
+
+document.getElementById('logClear').addEventListener('click', () => {
+  lsSet(K_LOG, []);
+  renderLog();
+  const list = document.getElementById('logList');
+  list.hidden = true;
+  document.getElementById('logFoot').hidden = true;
+  document.getElementById('logToggle').textContent = 'Histórico';
+});
+
+/* ---------------- aula do assunto (modal) ---------------- */
+let scrollAntes = 0;
+
+function renderLicao(id){
+  const l = LICOES[id];
+  if (!l) return '';
+
+  const corpo = l.blocos.map(b => {
+    if (b.t === 'h')   return `<h3>${b.v}</h3>`;
+    if (b.t === 'p')   return `<p>${b.v}</p>`;
+    if (b.t === 'formula') return `<div class="lesson-form">${b.v}${b.leg ? `<span class="leg">${b.leg}</span>` : ''}</div>`;
+    if (b.t === 'figura') return b.v;
+    if (b.t === 'destaque') return `<div class="lesson-hi">${b.v}</div>`;
+    if (b.t === 'lista') return `<ul>${b.v.map(x => `<li>${x}</li>`).join('')}</ul>`;
+    return '';
+  }).join('');
+
+  const erros = (l.erros && l.erros.length) ? `
+    <div class="lesson-erros">
+      <p class="tit">Onde todo mundo erra</p>
+      <ul>${l.erros.map(x => `<li>${x}</li>`).join('')}</ul>
+    </div>` : '';
+
+  return `
+    <div class="lesson-head">
+      <div style="flex:1;min-width:0">
+        <p class="eyebrow">Aula · Botânica</p>
+        <h2>${l.titulo}</h2>
+      </div>
+      <button class="lesson-close" id="fecharAula" type="button" aria-label="Fechar">✕</button>
+    </div>
+    <div class="lesson-body">
+      <p class="lesson-resumo">${l.resumo}</p>
+      ${corpo}
+      ${erros}
+    </div>
+    <div class="lesson-foot">
+      <button class="btn ghost" id="fecharAula2" type="button">Voltar para a questão</button>
+      <button class="btn" id="entendi" type="button">Entendi, continuar</button>
+    </div>`;
+}
+
+function abrirLicao(id){
+  const modal = document.getElementById('modal');
+  const box   = document.getElementById('lesson');
+  if (!modal || !LICOES[id]) return;
+  scrollAntes = window.scrollY;
+  box.innerHTML = renderLicao(id);
+  modal.classList.add('open');
+  modal.scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  document.getElementById('fecharAula').addEventListener('click', fecharLicao);
+  document.getElementById('fecharAula2').addEventListener('click', fecharLicao);
+  document.getElementById('entendi').addEventListener('click', fecharLicao);
+}
+
+function fecharLicao(){
+  const modal = document.getElementById('modal');
+  if (!modal) return;
+  modal.classList.remove('open');
+  document.body.style.overflow = '';
+  document.getElementById('lesson').innerHTML = '';
+  window.scrollTo({top: scrollAntes, behavior: 'auto'});
+  const n = document.getElementById('next');
+  if (n) n.focus({preventScroll:true});
+}
+
+document.addEventListener('click', e => {
+  if (e.target && e.target.id === 'modal') fecharLicao();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape'){
+    const m = document.getElementById('modal');
+    if (m && m.classList.contains('open')){ e.preventDefault(); e.stopPropagation(); fecharLicao(); }
+  }
+}, true);
+
+/* ---------------- teclado ---------------- */
+document.addEventListener('keydown', e => {
+  const modalAberto = document.getElementById('modal') && document.getElementById('modal').classList.contains('open');
+  if (modalAberto) return;              // aula aberta: teclado do quiz fica inativo
+  if (estado === 'intro'){
+    if (e.key === 'Enter'){ e.preventDefault(); comecar(true); }
+    return;
+  }
+  if (estado !== 'quiz') return;
+  const fb = document.getElementById('fb');
+  if (!fb) return;
+
+  if (fb.dataset.done){
+    if (e.key === 'Enter'){ e.preventDefault(); next(); }
+    return;
+  }
+  if (/^[1-5]$/.test(e.key)){
+    const i = parseInt(e.key, 10) - 1;
+    if (i < QUIZ[idx].alternativas.length){ e.preventDefault(); selecionar(i); }
+    return;
+  }
+  if (e.key === 'Enter' && pendente !== null){ e.preventDefault(); confirmar(); }
+  if (e.key === 'Escape' && pendente !== null){ e.preventDefault(); limparSelecao(); }
+});
+
+/* ---------------- ao sair no meio da tentativa ---------------- */
+window.addEventListener('pagehide', () => { if (estado === 'quiz') marcarSessao(); });
+window.addEventListener('beforeunload', () => { if (estado === 'quiz') marcarSessao(); });
+
+/* ---------------- boot ---------------- */
+registrarSaidaAnterior();
+renderLog();
+telaInicial();
+</script>
+</body>
+</html>

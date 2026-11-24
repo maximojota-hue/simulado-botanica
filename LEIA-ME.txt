@@ -1,0 +1,53 @@
+﻿SIMULADO DE BIOLOGIA - BOTANICA
+2o ano do Ensino Medio - 32 questoes - 50 minutos
+=================================================
+
+>>> JEITO MAIS FACIL <<<
+Clique 2 vezes em:  ABRIR-SIMULADO.bat
+O simulado abre no Chrome/Edge automaticamente.
+
+Se aparecer aviso azul do Windows ("O Windows protegeu o PC"),
+clique em "Mais informacoes" e depois em "Executar assim mesmo".
+
+
+>>> O QUE TEM DENTRO <<<
+- 32 questoes de multipla escolha, com gabarito comentado
+  (explicacao do motivo de CADA alternativa)
+- Cronometro de 50 minutos
+- Confirmacao antes de revelar a resposta
+- Registro de tentativas, reinicios e saidas no meio
+- 10 AULAS completas: toda resposta tem um botao
+  "Aprender o assunto do zero"
+- 3 diagramas: os quatro grupos, o ciclo de vida
+  e os orgaos da planta
+
+
+>>> AS 10 AULAS <<<
+ 1. Os quatro grupos de plantas
+ 2. Xilema e floema: os canos da planta
+ 3. Ciclos de vida: gametofito e esporofito
+ 4. Detalhes de cada grupo
+ 5. Raiz: zonas e tipos especiais
+ 6. Caule: aereos, subterraneos e aquatico
+ 7. Folha e suas modificacoes
+ 8. Flor: parte masculina e feminina
+ 9. Do ovario ao fruto
+10. Classificacao dos frutos
+
+
+>>> CONTEUDO <<<
+Montado a partir dos slides da aula de Botanica,
+revisado e ampliado: cada questao agora tem 5 alternativas
+e todas as alternativas erradas explicam o erro.
+
+
+>>> NAO PRECISA DE INTERNET <<<
+Funciona offline. O historico fica no navegador do computador.
+
+
+>>> NAO ABRA COM <<<
+Internet Explorer, Bloco de Notas, Word ou Excel.
+Use o .bat ou clique com o botao direito > Abrir com > Chrome.
+
+
+Problemas? O .bat precisa estar na MESMA PASTA do simulado.html.
