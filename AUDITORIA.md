@@ -4,21 +4,56 @@ Documento para outra IA auditar este simulado. Leia inteiro antes de mexer em qu
 
 ---
 
+## Histórico de versões
+
+### v2 — 2026-11-24 (por Kiro) — publicada, commit `f54d802`
+
+Auditoria completa + melhorias, confirmada no ar em
+https://maximojota-hue.github.io/simulado-botanica/.
+
+- **Gabarito**: os 32 gabaritos originais foram conferidos contra o material-fonte
+  e estavam **todos corretos**. Nenhum gabarito mudou.
+- **16 alternativas duplicadas corrigidas**: metade das questões tinha a
+  alternativa `e` repetindo exatamente outra alternativa (o `verificar.js` não
+  pega isso). Trocadas por distratores novos e plausíveis, com o `porque`
+  reescrito. Questões: 3, 10, 11, 12, 13, 18, 19, 20, 22, 23, 24, 25, 28, 30, 31, 32.
+- **+6 questões novas (32 → 38)** cobrindo lacunas do material: partes da folha,
+  folha simples × composta, função das pétalas, fruto seco × carnoso, bulbo
+  (cebola/alho) e mono × dicotiledônea.
+- **Bizus**: todas as 38 questões ganharam um macete ("🧠 Bizu:") no campo
+  `conceito`, aparecendo no feedback.
+- **2 mapas mentais** (blocos `formula` em árvore): decisão dos 4 grupos (aula
+  `quatro-grupos`) e ciclo gametófito↔esporófito (aula `ciclos-vida`).
+- **2 erros de conteúdo corrigidos**: a aula `ciclos-vida` dizia "esporo (2n)"
+  (o esporo é **n**); e "Platinha" → "plantinha".
+
+> ⚠️ **Dois perrengues de publicação na v2** (conserte se for mexer no `publicar.sh`):
+> rodando `publicar.sh` via bash no Windows, (1) o zip de distribuição saiu com
+> **0 bytes** — foi preciso regerar com `Compress-Archive` e dar push manual; e
+> (2) o loop de espera do Pages (`gh api .../pages/builds/latest`) estourou o
+> timeout. O push em si funciona; o gargalo é o zip e a espera.
+
+### v1 — commit `19465a7`
+32 questões, 10 aulas, 3 figuras. Versão inicial, sem bizus nem mapas mentais,
+com as 16 alternativas duplicadas.
+
+---
+
 ## O comando
 
 ```bash
 cd "C:/Users/jcarlos/Documents/simulado-botanica" && node verificar.js simulado.html
 ```
 
-Saída esperada hoje:
+Saída esperada hoje (estado v2):
 
 ```
   Arquivo:     simulado.html
-  Questoes:    32
+  Questoes:    38
   Aulas:       10
   Figuras:     3 questoes com diagrama
   Temas:       10
-  Gabarito no arquivo: a=8  b=8  c=8  d=8  e=0
+  Gabarito no arquivo: a=14  b=8  c=8  d=8  e=0
 
   OK: banco de questoes valido. Pode publicar.
 ```
@@ -39,7 +74,7 @@ Saída esperada hoje:
 | Fotos dos slides | `E:\estudos gabriel\botanica\*.jpeg` |
 | Link público | https://maximojota-hue.github.io/simulado-botanica/ |
 | Repositório | https://github.com/maximojota-hue/simulado-botanica (branch `main`) |
-| Commit atual | `19465a7` |
+| Commit atual | `f54d802` (v2 — 38 questões) |
 
 ---
 
@@ -52,9 +87,14 @@ const SVG_GRUPOS = `...`;   // 3 diagramas SVG embutidos
 const SVG_CICLO  = `...`;
 const SVG_ORGAOS = `...`;
 
-const QUESTIONS = [ ... ];  // 32 questões
+const QUESTIONS = [ ... ];  // 38 questões (v2)
 const LICOES    = { ... };  // 10 aulas
 ```
+
+As questões 1–32 têm o campo `"_orig": N` (ordem original). As 6 questões
+adicionadas na v2 (33–38) não têm `_orig` — é só um marcador de origem, não
+afeta nada. A `licao` de cada questão é inline; `LICAO_POR_QUESTAO` é derivado
+dela por `QUESTIONS.map(q => q.licao)`.
 
 ### Formato de cada questão
 
