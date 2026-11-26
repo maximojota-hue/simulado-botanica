@@ -6,6 +6,13 @@ Documento para outra IA auditar este simulado. Leia inteiro antes de mexer em qu
 
 ## Histórico de versões
 
+### v2.1 — 2026-11-24 — validador reforçado (só `verificar.js`, conteúdo intacto)
+
+- `verificar.js` agora **rejeita alternativas idênticas na mesma questão**.
+  Foi o defeito da v1 (a alternativa `e` repetia outra em 16 questões) e o
+  validador da época não pegava. O simulado em si não mudou: continua 38
+  questões, mesma publicação.
+
 ### v2 — 2026-11-24 (por Kiro) — publicada, commit `f54d802`
 
 Auditoria completa + melhorias, confirmada no ar em
@@ -14,9 +21,10 @@ https://maximojota-hue.github.io/simulado-botanica/.
 - **Gabarito**: os 32 gabaritos originais foram conferidos contra o material-fonte
   e estavam **todos corretos**. Nenhum gabarito mudou.
 - **16 alternativas duplicadas corrigidas**: metade das questões tinha a
-  alternativa `e` repetindo exatamente outra alternativa (o `verificar.js` não
-  pega isso). Trocadas por distratores novos e plausíveis, com o `porque`
-  reescrito. Questões: 3, 10, 11, 12, 13, 18, 19, 20, 22, 23, 24, 25, 28, 30, 31, 32.
+  alternativa `e` repetindo exatamente outra alternativa. Trocadas por
+  distratores novos e plausíveis, com o `porque` reescrito. **O `verificar.js`
+  passou a checar duplicadas depois disso** (v2.1) — hoje o erro é pego antes
+  de publicar. Questões: 3, 10, 11, 12, 13, 18, 19, 20, 22, 23, 24, 25, 28, 30, 31, 32.
 - **+6 questões novas (32 → 38)** cobrindo lacunas do material: partes da folha,
   folha simples × composta, função das pétalas, fruto seco × carnoso, bulbo
   (cebola/alho) e mono × dicotiledônea.

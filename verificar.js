@@ -92,6 +92,20 @@ Q.forEach((q, i) => {
       erros.push(rot + letra + ': falta "porque" explicando o erro (minimo 25 caracteres).');
   });
 
+  // alternativas repetidas dentro da mesma questao (duas iguais = aluno elimina sozinho)
+  const vistosTxt = new Map();
+  alts.forEach((a, j) => {
+    if (!a || !a.t) return;
+    const chave = String(a.t).replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+    if (!chave) return;
+    if (vistosTxt.has(chave)) {
+      erros.push(rot + ': alternativas ' + vistosTxt.get(chave) + ' e ' + ('abcde'[j] || j) +
+                 ' sao identicas ("' + chave.slice(0, 40) + '").');
+    } else {
+      vistosTxt.set(chave, 'abcde'[j] || String(j));
+    }
+  });
+
   temas[q.tema] = (temas[q.tema] || 0) + 1;
 
   // figura: se existir, precisa ser SVG embutido (nao imagem externa)
