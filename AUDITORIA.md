@@ -6,7 +6,11 @@ Documento para outra IA auditar este simulado. Leia inteiro antes de mexer em qu
 
 ## Histórico de versões
 
-### v3 — 2026-11-26 — auditoria + cobertura completa da matéria (NÃO publicada ainda)
+### v3.1 — 2026-11-26 — sorteio sem sequências
+
+- `montarQuiz` agora garante no máximo **2 respostas certas seguidas na mesma letra** (antes, 87% das provas tinham 3 ou mais seguidas, até 7). A distribuição continua equilibrada (cada letra ~20%).
+
+### v3 — 2026-11-26 — auditoria + cobertura completa da matéria (publicada)
 
 - **Gabarito**: as 38 questões conferidas de novo; nenhum gabarito errado.
 - **Correções de conteúdo**: Q31 (pólen NÃO é gameta: é o gametófito masculino); mapa mental do ciclo

@@ -4268,6 +4268,9 @@ function montarQuiz(){
     for (let k = 0; k < qtd; k++) pool.push(l);
   }
   pool = shuffleArr(pool);
+  // evita 3 ou mais respostas certas seguidas na mesma letra (embaralha de novo ate cumprir)
+  const maiorSeq = v => { let m = 1, r = 1; for (let i = 1; i < v.length; i++){ r = v[i] === v[i-1] ? r + 1 : 1; if (r > m) m = r; } return m; };
+  for (let t = 0; t < 2000 && maiorSeq(pool) > 2; t++) pool = shuffleArr(pool);
 
   return QUESTIONS.map((q, qi) => {
     const correta = q.alternativas.findIndex(a => a.ok);
