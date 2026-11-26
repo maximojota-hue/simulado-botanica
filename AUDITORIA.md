@@ -6,6 +6,26 @@ Documento para outra IA auditar este simulado. Leia inteiro antes de mexer em qu
 
 ## Histórico de versões
 
+### v3 — 2026-11-26 — auditoria + cobertura completa da matéria (NÃO publicada ainda)
+
+- **Gabarito**: as 38 questões conferidas de novo; nenhum gabarito errado.
+- **Correções de conteúdo**: Q31 (pólen NÃO é gameta: é o gametófito masculino); mapa mental do ciclo
+  na aula `ciclos-vida` tinha "meiose" na seta errada (agora: meiose na seta esporófito → esporos, "germina" na seta
+  esporos → gametófito); bizu da roseira (o "espinho" da roseira não é folha modificada); "pétala" na lista de
+  erros da aula `folha`; typo "Platinha"; "os ploidias".
+- **Figuras SVG**: acentos corrigidos; ciclo ganhou "mitose" e "germina" e seta com ponta; rótulo "zigoto" sem sobreposição.
+- **+33 questões (38 → 71)** cobrindo o que faltava: xilema/floema (células e sentido), briófitas (cápsula, gametófito
+  feminino, filos), pteridófitas (soros, anterídio/arquegônio), gimnospermas (filos, estróbilos, pólen), angiospermas
+  (dicotiledônea, endosperma, tubo polínico), raiz (coifa, tabulares, escoras, estranguladoras, tuberosas), caule (gemas,
+  haste, rizoma), folha (catáfilos, brácteas, gavinhas, carnívoras), flor (sépalas, pistilo, flor masculina) e fruto
+  (pericarpo, vagem, monospérmico). Todas com bizu e aula.
+- **+4 aulas** (`briofitas`, `pteridofitas`, `gimnospermas`, `angiospermas`) e blocos novos nas aulas existentes
+  (inclui complementos que não estão nos slides, sempre marcados como "complemento"/"extra").
+- **17 slides da professora** embutidos (JPEG dentro de SVG): aparecem no feedback DEPOIS de responder (para não entregar a
+  resposta) e dentro das aulas; toque na imagem para ampliar. Campo novo da questão: `slide`.
+- **Tempo**: 1,5 min por questão (`SEG_POR_QUESTAO = 90`); `LIMITE_SEG = QUESTIONS.length * 90` (hoje 71 × 1,5 = 106:30).
+- A ordem das questões agora segue a ordem da matéria (os números Q1–Q38 das tabelas abaixo são da v2).
+
 ### v2.1 — 2026-11-24 — validador reforçado (só `verificar.js`, conteúdo intacto)
 
 - `verificar.js` agora **rejeita alternativas idênticas na mesma questão**.
@@ -57,11 +77,11 @@ Saída esperada hoje (estado v2):
 
 ```
   Arquivo:     simulado.html
-  Questoes:    38
-  Aulas:       10
+  Questoes:    71
+  Aulas:       14
   Figuras:     3 questoes com diagrama
-  Temas:       10
-  Gabarito no arquivo: a=14  b=8  c=8  d=8  e=0
+  Temas:       14
+  (o gabarito no arquivo fica em posições variadas; o sorteio embaralha na tela)
 
   OK: banco de questoes valido. Pode publicar.
 ```
@@ -212,8 +232,8 @@ Abra `simulado.html` no navegador e rode no console:
 
 ```js
 // integridade
-QUESTIONS.length === 32                                                   // true
-Object.keys(LICOES).length === 10                                         // true
+QUESTIONS.length === 71                                                   // true
+Object.keys(LICOES).length === 14                                         // true
 QUESTIONS.every(q => q.alternativas.filter(a=>a.ok).length === 1)         // true
 QUESTIONS.every(q => q.alternativas.length === 5)                         // true
 QUESTIONS.every(q => q.alternativas.every(a => a.porque && a.porque.length >= 25))  // true
@@ -231,7 +251,7 @@ QUESTIONS.every(q => q.licao && LICOES[q.licao])                          // tru
 ```
 
 Na tela, nesta ordem:
-1. **Iniciar simulado** → cronômetro corre a partir de 50:00.
+1. **Iniciar simulado** → cronômetro corre a partir de 106:30 (1,5 min × 71).
 2. Q1 tem a figura dos quatro grupos abaixo do enunciado.
 3. Clicar numa alternativa → **não revela nada**, só abre "Confirmar esta resposta?".
 4. **Confirmar** → marca verde/vermelho, lista as 5 explicações e mostra o botão da aula.
@@ -256,7 +276,7 @@ bash publicar.sh "Auditoria: descreva o que mudou"
 
 ```bash
 curl -sL "https://maximojota-hue.github.io/simulado-botanica/?v=$(date +%s)" | grep -c '"ok": true'
-# tem de retornar 32
+# tem de retornar 71
 ```
 
 ---
